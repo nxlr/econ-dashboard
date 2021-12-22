@@ -30,7 +30,7 @@ shinyUI(fluidPage(
     ")),
     tags$style("
     .navbar-header{
-      padding-right: 180px;
+      padding-right: 120px;
       font-family: 'Playfair Display SC';
       
     }")
