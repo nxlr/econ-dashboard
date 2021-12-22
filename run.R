@@ -1,9 +1,3 @@
-packages <- c("shiny", "dplyr", "plotly", "ggthemes", "thematic", "showtext",
-              "sf", "readxl", "tidyr", "ggstream", "viridis", "hrbrthemes")
-
-install.packages(setdiff(packages, rownames(installed.packages())))  
-
-
 library(shiny)
 
 port <- Sys.getenv('PORT')
