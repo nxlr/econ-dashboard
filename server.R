@@ -20,6 +20,9 @@ shinyServer(function(input, output, session) {
     stateGDP <- read_excel("./datasets/state_gdp_2011_12_prices.xlsx")
     indusData <- read_excel("./datasets/industry_haryana.xlsx")
     sectoralGDP <- read_excel("./datasets/sectoral_gdp.xlsx")
+    allLabor_data <- read_excel("./datasets/labor_overall_haryana.xlsx")
+    edLabor_data <- read_excel("./datasets/labor_education_haryana.xlsx")
+    sectoralLabor_data <- read_excel("./datasets/labor_sectoral_haryana.xlsx")
     #indus1 <- as.data.frame(read_excel("./datasets/industry/indus1.xlsx"))
     
     # output$gdpMap <- renderPlotly(
@@ -32,13 +35,22 @@ shinyServer(function(input, output, session) {
     })
     
     dta2 <- reactive({
-      req(input$year)
-      df2 <- districtGDP %>% filter(districtGDP$Year==input$year)
+      req(input$yearGDP)
+      df2 <- districtGDP %>% filter(districtGDP$Year==input$yearGDP)
     })
     
     indusReact <- reactive({
       req(input$indusYear)
       df3 <- indusData %>% filter(indusData$Year==input$indusYear)
+    })
+    
+    ruralLaborReact <- reactive({
+      req(input$yearLabor)
+      req(input$ageLabor)
+      df4 <- allLabor_data %>% filter(allLabor_data$Year==input$yearLabor 
+                                      && allLabor_data$Age==input$ageLabor
+                                      && allLabor_data$Sector=="Rural")
+                                            
     })
     
     output$barTabs <- renderUI({
@@ -47,6 +59,11 @@ shinyServer(function(input, output, session) {
     
     output$treeTabs <- renderUI({
         plotlyOutput("gdpTree")
+    })
+    
+    
+    output$allLaborPlot <- renderPlotly({
+     plot_ly()
     })
     
     output$gdpBars <- renderPlotly({
@@ -92,7 +109,7 @@ shinyServer(function(input, output, session) {
         #marker=list(colors=c("lightgreen", "aqua", "yellow", "purple", "#FFF", "lightgray", "pink"))
       ) %>%
         config(displaylogo = FALSE) %>% 
-        layout(title = list(y=0.98, text=paste("Haryana GDP Distribution (in ", input$year, ")"),
+        layout(title = list(y=0.98, text=paste("Haryana GDP Distribution (in ", input$yearGDP, ")"),
                             font=list(size=18, family="Lato")),
                annotations = list(
                  list(x = 0.0 , y = -0.1, text = "Source: DESA, Haryana",
