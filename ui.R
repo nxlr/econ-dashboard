@@ -147,7 +147,7 @@ shinyUI(fluidPage(
                  tabPanel("GDP (DFD)", icon = icon("sitemap"),
                           mainPanel( width = 12,
                                      tags$h5("Data Flow Diagram: State GDP calculation of Haryana"),
-                                     includeHTML("./datasets/SGDP DFD Layout (sample).drawio.html")))
+                                     includeHTML("./datasets/gdp/SGDP DFD Layout (sample).drawio.html")))
                  )
       
                 
