@@ -20,7 +20,8 @@ shinyServer(function(input, output, session) {
     stateGDP <- read_excel("./datasets/gdp/state_gdp_2011_12_prices.xlsx")
     indusData <- read_excel("./datasets/industry/industry_haryana.xlsx")
     sectoralGDP <- read_excel("./datasets/gdp/sectoral_gdp.xlsx")
-    allLabor_data <- read_excel("./datasets/labor/labor_overall_haryana.xlsx")
+    allLabor_data_tmp <- read_excel("./datasets/labor/labor_overall_haryana.xlsx")
+    allLabor_data <- melt(allLabor_data_tmp, id=c("Year","Age","Sector","Gender"))
     edLabor_data <- read_excel("./datasets/labor/labor_education_haryana.xlsx")
     sectoralLabor_data <- read_excel("./datasets/labor/labor_sectoral_haryana.xlsx")
     #indus1 <- as.data.frame(read_excel("./datasets/industry/indus1.xlsx"))
@@ -44,12 +45,12 @@ shinyServer(function(input, output, session) {
       df3 <- indusData %>% filter(indusData$Year==input$indusYear)
     })
     
-    ruralLaborReact <- reactive({
+    allLaborReact <- reactive({
       req(input$yearLabor)
       req(input$ageLabor)
-      df4 <- allLabor_data %>% filter(allLabor_data$Year==input$yearLabor 
-                                      && allLabor_data$Age==input$ageLabor
-                                      && allLabor_data$Sector=="Rural")
+      
+      allLabor_data <- allLabor_data %>% filter(allLabor_data$Year == input$yearLabor) 
+      df4 <- allLabor_data %>% filter(allLabor_data$Age == input$ageLabor)                                
                                             
     })
     
@@ -63,7 +64,51 @@ shinyServer(function(input, output, session) {
     
     
     output$allLaborPlot <- renderPlotly({
-     plot_ly()
+      rural <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural") %>%
+        group_by(Gender) %>% 
+        arrange(Gender) %>%
+        plot_ly(
+          x = ~variable, 
+          y = ~value,
+          color= ~Gender,
+          colors = 'Pastel1',
+          type = 'bar',
+          legendgroup =~Gender,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = T) %>% 
+        layout(xaxis = list(title = "Rural"))
+      
+      urban <- allLaborReact() %>% filter(allLaborReact()$Sector == "Urban") %>%
+        group_by(Gender) %>% 
+        arrange(Gender) %>%
+        plot_ly(
+          x = ~variable, 
+          y = ~value, 
+          color= ~Gender,
+          colors = 'Pastel1',
+          type = 'bar',
+          legendgroup =~Gender,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = F) %>% 
+        layout(xaxis = list(title = "Urban"))
+      
+      total <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural+Urban") %>%
+        group_by(Gender) %>% 
+        arrange(Gender) %>%
+        plot_ly(
+          x = ~variable, 
+          y = ~value, 
+          color= ~Gender,
+          colors = 'Pastel1',
+          type = 'bar',
+          legendgroup =~Gender,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = F) %>% 
+        layout(xaxis = list(title = "Rural+Urban"))
+      
+      subplot(rural, urban, total ,titleX = T, shareY = T) %>% 
+        layout(barmode = 'group', showlegend = T,
+               yaxis = list(title = "Rates"))
     })
     
     output$gdpBars <- renderPlotly({

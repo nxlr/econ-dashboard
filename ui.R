@@ -97,21 +97,6 @@ shinyUI(fluidPage(
                
       tabPanel("Labour Statistics", icon = icon("users"),
                sidebarLayout(fluid = TRUE,
-                             # sidebarPanel(
-                             #   selectInput(inputId = "laborType", 
-                             #               label = "Select Labor Data", 
-                             #               c("Labor Statistics - Overall"="overallLabor", 
-                             #                 "Labor Statistics - Education-wise Distribution" = "educationLabor", 
-                             #                 "Labor Statistics - Sectoral Distribution in GDP" = "sectoralLabor"
-                             #                 ))
-                             # ),
-                             # 
-                             # conditionalPanel(
-                             #   condition = "input.laborType == 'overallLabor'",
-                             #   selectInput(inputId = "yearOverallLabor", label = " PLFS Year", c("2019-20","2018-19","2017-18")),
-                             #   selectInput(inputId = "ageOverLabor", label = " Age Group", c("15-29 (Youth)","15 and above","All"))
-                             #   
-                             # ),
                              sidebarPanel(
                                selectInput(inputId = "yearLabor", label = " PLFS Year", c("2019-20","2018-19","2017-18")),
                                selectInput(inputId = "ageLabor", label = " Age Group", c("15-29","15 and above","All ages"))
