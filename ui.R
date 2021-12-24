@@ -145,7 +145,10 @@ shinyUI(fluidPage(
                           sidebarPanel(
                             tags$h5("Coming Soon..."),
                           )),
-                 tabPanel("Contact", icon = icon("envelope")),
+                 tabPanel("Contact", icon = icon("envelope"),
+                          sidebarPanel(
+                            tags$h5("Coming Soon..."),
+                          )),
                  tabPanel("GDP (DFD)", icon = icon("sitemap"),
                           mainPanel( width = 12,
                                      tags$h5("Data Flow Diagram: State GDP calculation of Haryana"),
