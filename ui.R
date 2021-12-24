@@ -142,7 +142,9 @@ shinyUI(fluidPage(
       tabPanel("Education", icon = icon("user-graduate")),
       navbarMenu("About",
                  tabPanel("About Us", icon = icon("info-circle"),
-                          sidebarPanel(paste("About Us"))),
+                          sidebarPanel(
+                            tags$h5("Coming Soon..."),
+                          )),
                  tabPanel("Contact", icon = icon("envelope")),
                  tabPanel("GDP (DFD)", icon = icon("sitemap"),
                           mainPanel( width = 12,
