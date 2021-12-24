@@ -64,51 +64,51 @@ shinyServer(function(input, output, session) {
     
     
     output$allLaborPlot <- renderPlotly({
-      # rural <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural") %>%
-      #   group_by(Gender) %>% 
-      #   arrange(Gender) %>%
-      #   plot_ly(
-      #     x = ~variable, 
-      #     y = ~value,
-      #     color= ~Gender,
-      #     colors = 'Pastel1',
-      #     type = 'bar',
-      #     legendgroup =~Gender,
-      #     hovertemplate = "%{y:.2f}%",
-      #     showlegend = T) %>% 
-      #   layout(xaxis = list(title = "Rural"))
-      # 
-      # urban <- allLaborReact() %>% filter(allLaborReact()$Sector == "Urban") %>%
-      #   group_by(Gender) %>% 
-      #   arrange(Gender) %>%
-      #   plot_ly(
-      #     x = ~variable, 
-      #     y = ~value, 
-      #     color= ~Gender,
-      #     colors = 'Pastel1',
-      #     type = 'bar',
-      #     legendgroup =~Gender,
-      #     hovertemplate = "%{y:.2f}%",
-      #     showlegend = F) %>% 
-      #   layout(xaxis = list(title = "Urban"))
-      # 
-      # total <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural+Urban") %>%
-      #   group_by(Gender) %>% 
-      #   arrange(Gender) %>%
-      #   plot_ly(
-      #     x = ~variable, 
-      #     y = ~value, 
-      #     color= ~Gender,
-      #     colors = 'Pastel1',
-      #     type = 'bar',
-      #     legendgroup =~Gender,
-      #     hovertemplate = "%{y:.2f}%",
-      #     showlegend = F) %>% 
-      #   layout(xaxis = list(title = "Rural+Urban"))
-      # 
-      # subplot(rural, urban, total ,titleX = T, shareY = T) %>% 
-      #   layout(barmode = 'group', showlegend = T,
-      #          yaxis = list(title = "Rates"))
+      rural <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural") %>%
+        group_by(Gender) %>% 
+        arrange(Gender) %>%
+        plot_ly(
+          x = ~variable, 
+          y = ~value,
+          color= ~Gender,
+          colors = 'Pastel1',
+          type = 'bar',
+          legendgroup =~Gender,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = T) %>% 
+        layout(xaxis = list(title = "Rural"))
+      
+      urban <- allLaborReact() %>% filter(allLaborReact()$Sector == "Urban") %>%
+        group_by(Gender) %>% 
+        arrange(Gender) %>%
+        plot_ly(
+          x = ~variable, 
+          y = ~value, 
+          color= ~Gender,
+          colors = 'Pastel1',
+          type = 'bar',
+          legendgroup =~Gender,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = F) %>% 
+        layout(xaxis = list(title = "Urban"))
+      
+      total <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural+Urban") %>%
+        group_by(Gender) %>% 
+        arrange(Gender) %>%
+        plot_ly(
+          x = ~variable, 
+          y = ~value, 
+          color= ~Gender,
+          colors = 'Pastel1',
+          type = 'bar',
+          legendgroup =~Gender,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = F) %>% 
+        layout(xaxis = list(title = "Rural+Urban"))
+      
+      subplot(rural, urban, total ,titleX = T, shareY = T) %>% 
+        layout(barmode = 'group', showlegend = T,
+               yaxis = list(title = "Rates"))
     })
     
     output$gdpBars <- renderPlotly({
