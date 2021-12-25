@@ -105,8 +105,8 @@ shinyUI(fluidPage(
                              mainPanel(
                                tabsetPanel(
                                  tabPanel("Overall Distribution", plotlyOutput("allLaborPlot")),
-                                 tabPanel("Education-wise Distribution"),
-                                 tabPanel("Sectoral Distribution")
+                                 tabPanel("Education-wise Distribution", plotlyOutput("edLaborPlot")),
+                                 tabPanel("Sectoral Distribution", plotlyOutput("sectoralLaborPlot"))
                                )
                              )
                )),
