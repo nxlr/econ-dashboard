@@ -15,7 +15,7 @@ library(reshape2)
 
 # Define server logic
 shinyServer(function(input, output, session) {
-    autoInvalidate <- reactiveTimer(40000)
+    autoInvalidate <- reactiveTimer(90000)
     observe({
       autoInvalidate()
       cat("Keep active\n")
