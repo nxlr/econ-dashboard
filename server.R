@@ -15,11 +15,6 @@ library(reshape2)
 
 # Define server logic
 shinyServer(function(input, output, session) {
-    autoInvalidate <- reactiveTimer(90000)
-    observe({
-      autoInvalidate()
-      cat("Keep active\n")
-    })
   
     #shapeFile <- read_sf(dsn = "./www/Layers_DISTRICTS-polygon.shx")
     districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
