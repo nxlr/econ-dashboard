@@ -15,6 +15,11 @@ library(reshape2)
 
 # Define server logic
 shinyServer(function(input, output, session) {
+    autoInvalidate <- reactiveTimer(40000)
+    observe({
+      autoInvalidate()
+      cat("Keep active\n")
+    })
   
     #shapeFile <- read_sf(dsn = "./www/Layers_DISTRICTS-polygon.shx")
     districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
@@ -132,7 +137,8 @@ shinyServer(function(input, output, session) {
                yaxis = list(title = "Rates"))
     })
     
-    output$edLaborPlot <- renderPlotly({
+    output$edLaborPlot <- renderText({
+      paste("Coming Soon...")
       
     })
     
@@ -181,7 +187,7 @@ shinyServer(function(input, output, session) {
       
       subplot(rural, urban, total ,titleX = T, shareY = T) %>% 
         layout(barmode = 'stack', showlegend = T,
-               yaxis = list(title = "Sectoral Distribution"))
+               yaxis = list(title = "Sectoral Distribution of Labor"))
     })
     
     output$gdpBars <- renderPlotly({
