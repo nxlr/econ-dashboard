@@ -25,6 +25,13 @@ thematic_shiny(font = "auto")
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
+  
+  # Loading UI using waiter
+  useWaiter(), 
+  waiterPreloader(html = tagList(spin_flower(), "Loading ..."),
+                  color = "#2A2D40"),
+  autoWaiter(html = tagList(spin_wave())),
+  
   #tags$script(inactivity),
   theme = my_theme,
   
