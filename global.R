@@ -1,14 +1,3 @@
-library(shiny)
-library(dplyr)
-library(plotly)
-library(ggthemes)
-library(thematic)
-library(showtext)
-library(readxl)
-library(tidyr)
-library(ggstream)
-library(viridis)
-library(hrbrthemes)
-library(reshape2)
-library(highcharter)
-library(bslib)
+source('lib_calls.R', local = FALSE)
+
+

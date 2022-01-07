@@ -1,4 +1,3 @@
-
 inactivity <- "function idleTimer() {
   var t = setTimeout(logout, 5000);
   window.onmousemove = resetTimer; // catches mouse movements
