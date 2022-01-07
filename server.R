@@ -1,6 +1,12 @@
 # Define server logic
 shinyServer(function(input, output, session) {
   
+  autoInvalidate <- reactiveTimer(54000)
+  observe({
+    autoInvalidate()
+    cat(".")
+  })
+  
     #shapeFile <- read_sf(dsn = "./www/Layers_DISTRICTS-polygon.shx")
     districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
     stateGDP <- read_excel("./datasets/gdp/state_gdp_2011_12_prices.xlsx")
