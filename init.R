@@ -1,5 +1,5 @@
 packages <- c("shiny", "dplyr", "plotly", "ggthemes", "thematic", "showtext",
-              "readxl", "tidyr", "ggstream", "viridis", "hrbrthemes", "reshape2")
+              "readxl", "tidyr", "ggstream", "viridis", "hrbrthemes", "reshape2", "highcharter")
 
 install_if_missing <- function(p) {
   if (!p %in% rownames(installed.packages())) {
