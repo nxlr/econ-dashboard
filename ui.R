@@ -1,22 +1,3 @@
-inactivity <- "function idleTimer() {
-  var t = setTimeout(logout, 5000);
-  window.onmousemove = resetTimer; // catches mouse movements
-  window.onmousedown = resetTimer; // catches mouse movements
-  window.onclick = resetTimer;     // catches mouse clicks
-  window.onscroll = resetTimer;    // catches scrolling
-  window.onkeypress = resetTimer;  //catches keyboard actions
-
-  function logout() {
-    window.location.reload();  //reload the window
-  }
-
-  function resetTimer() {
-    clearTimeout(t);
-    t = setTimeout(logout, 5000);  // time is in milliseconds (1000 is 1 second)
-  }
-}
-idleTimer();"
-
 # Setup the bslib theme object
 my_theme <- bs_theme(bootswatch = "materia")
 
@@ -25,6 +6,8 @@ thematic_shiny(font = "auto")
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
+  
+  tags$script(inactivity), 
   
   # Loading UI using waiter
   useWaiter(), 
