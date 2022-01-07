@@ -1,9 +1,3 @@
-library(shiny)
-library(plotly)
-library(bslib)
-library(thematic)
-library(showtext)
-library(highcharter)
 
 inactivity <- "function idleTimer() {
   var t = setTimeout(logout, 5000);
