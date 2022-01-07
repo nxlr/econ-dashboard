@@ -10,7 +10,9 @@ library(ggstream)
 library(viridis)
 library(hrbrthemes)
 library(reshape2)
-
+library(highcharter) 
+# Set highcharter options
+options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2)))
 
 
 # Define server logic
@@ -41,6 +43,11 @@ shinyServer(function(input, output, session) {
     dta2 <- reactive({
       req(input$yearGDP)
       df2 <- districtGDP %>% filter(districtGDP$Year==input$yearGDP)
+    })
+    
+    sectoralGDP_react <- reactive({
+      req(input$sectorYear)
+      sect <- sectoralGDP %>% filter(sectoralGDP$Year==input$sectorYear)
     })
     
     indusReact <- reactive({
@@ -239,16 +246,27 @@ shinyServer(function(input, output, session) {
                )    
     })
     
-    output$streamGDP <- renderPlotly({
+    output$sectGDP <- renderHighchart({
       
-      sectoralGDP %>% group_by(Year) %>% arrange(Sector) %>% mutate(GVA = cumsum(GVA)) %>% 
-      plot_ly(type = 'scatter', x = ~Year, y = ~GVA,
-              color = ~Sector, 
-              mode = 'lines', fill = 'tonexty',
-              colors = "Dark2") %>%
-        layout(legend = list(x = 100, y = 0.5),
-               xaxis = list(showgrid = F),
-               yaxis = list(showgrid = F))
+      # sectoralGDP %>% group_by(Year) %>% arrange(Sector) %>% mutate(GVA = cumsum(GVA)) %>% 
+      # plot_ly(type = 'scatter', x = ~Year, y = ~GVA,
+      #         color = ~Sector, 
+      #         mode = 'lines', fill = 'tonexty',
+      #         colors = "Dark2") %>%
+      #   layout(legend = list(x = 100, y = 0.5),
+      #          xaxis = list(showgrid = F),
+      #          yaxis = list(showgrid = F))
+      hc <- sectoralGDP_react() %>%
+        hchart(
+          "pie", hcaes(x = Sector, y = GVA),
+          name = "Sectoral Distribution"
+        ) %>%
+        hc_title(text = "Sectoral Distribution") %>%
+        hc_subtitle(text = "Source: DESA, Haryana") %>%
+        hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
+                   pointFormat=paste('<br><b>{point.percentage:.1f}%</b>
+                                     (GVA: {point.y} Lakhs)'))
+      #plot_ly(sectoralGDP_react(), labels = ~Sector, values = ~GVA, type = 'pie')
       
       
           

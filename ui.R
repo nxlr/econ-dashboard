@@ -3,8 +3,26 @@ library(plotly)
 library(bslib)
 library(thematic)
 library(showtext)
+library(highcharter)
 
+inactivity <- "function idleTimer() {
+  var t = setTimeout(logout, 5000);
+  window.onmousemove = resetTimer; // catches mouse movements
+  window.onmousedown = resetTimer; // catches mouse movements
+  window.onclick = resetTimer;     // catches mouse clicks
+  window.onscroll = resetTimer;    // catches scrolling
+  window.onkeypress = resetTimer;  //catches keyboard actions
 
+  function logout() {
+    window.location.reload();  //reload the window
+  }
+
+  function resetTimer() {
+    clearTimeout(t);
+    t = setTimeout(logout, 5000);  // time is in milliseconds (1000 is 1 second)
+  }
+}
+idleTimer();"
 
 # Setup the bslib theme object
 my_theme <- bs_theme(bootswatch = "materia")
@@ -14,7 +32,7 @@ thematic_shiny(font = "auto")
 
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(
-  
+  #tags$script(inactivity),
   theme = my_theme,
   
   
@@ -52,13 +70,19 @@ shinyUI(fluidPage(
                    selectInput(inputId="plotType", label="Select Data",
                                c("State GDP (Year-wise)"="GSDP_bar", 
                                  "GDP Distribution (District-wise)" = "GDPtree", 
-                                 "Structural Change in Sectoral GDP" = "sectorGDP", 
+                                 "Sectoral GDP (Year-wise)" = "sectorGDP", 
                                  "District GDP (Year-wise)" = "distBar")
                    ),
                    
                    conditionalPanel(
                      condition = "input.plotType == 'GDPtree'",
                      selectInput(inputId = "yearGDP", label = "Year", c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12"))
+                     
+                   ),
+                   
+                   conditionalPanel(
+                     condition = "input.plotType == 'sectorGDP'",
+                     selectInput(inputId = "sectorYear", label = "Year", c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01"))
                      
                    ),
                    
@@ -91,7 +115,7 @@ shinyUI(fluidPage(
                      ),
                    conditionalPanel(
                      condition = "input.plotType == 'sectorGDP'",
-                     plotlyOutput("streamGDP")
+                     highchartOutput("sectGDP")
                      )
                    )
                  
