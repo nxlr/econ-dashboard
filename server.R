@@ -3,27 +3,6 @@ shinyServer(function(input, output, session) {
   
   session$allowReconnect("force")
   
-  observeEvent(input$timeOut, { 
-    print(paste0("Session (", session$token, ") timed out at: ", Sys.time()))
-    shinyalert(
-      title = "Timeout",
-      text = paste("Session Inactive for too long.", "Reload Page.", sep="\n"),
-      size = "s", 
-      closeOnEsc = TRUE,
-      closeOnClickOutside = FALSE,
-      html = FALSE,
-      type = "warning",
-      showConfirmButton = FALSE,
-      showCancelButton = FALSE,
-      confirmButtonText = "Refresh",
-      confirmButtonCol = "#90EE90",
-      timer = 0,
-      imageUrl = "",
-      animation = TRUE
-    )
-    session$close()
-  })
-  
     #shapeFile <- read_sf(dsn = "./www/Layers_DISTRICTS-polygon.shx")
     districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
     stateGDP <- read_excel("./datasets/gdp/state_gdp_2011_12_prices.xlsx")

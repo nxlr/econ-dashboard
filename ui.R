@@ -11,8 +11,6 @@ shinyUI(fluidPage(
   useWaiter(), 
   autoWaiter(html = tagList(spin_wave())),
   
-  tags$script(inactivity), 
-  
   #tags$script(inactivity),
   theme = my_theme,
   
