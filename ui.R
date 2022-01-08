@@ -1,5 +1,3 @@
-textOutput("keepAlive")
-
 # Setup the bslib theme object
 my_theme <- bs_theme(bootswatch = "materia")
 
