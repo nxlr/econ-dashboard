@@ -1,11 +1,13 @@
 # Define server logic
 shinyServer(function(input, output, session) {
   
+  session$allowReconnect("force")
+  
   observeEvent(input$timeOut, { 
     print(paste0("Session (", session$token, ") timed out at: ", Sys.time()))
     shinyalert(
       title = "Timeout",
-      text = paste("Session Inactive for too long."),
+      text = paste("Session Inactive for too long.", "Reload Page.", sep="\n"),
       size = "s", 
       closeOnEsc = TRUE,
       closeOnClickOutside = FALSE,

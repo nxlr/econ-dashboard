@@ -1,6 +1,6 @@
 source('lib_calls.R', local = FALSE)
 
-timeoutSeconds <- 150
+timeoutSeconds <- 180
 
 inactivity <- sprintf("function idleTimer() {
 var t = setTimeout(logout, %s);
