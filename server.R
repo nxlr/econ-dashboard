@@ -1,7 +1,12 @@
 # Define server logic
 shinyServer(function(input, output, session) {
   
-  session$allowReconnect("force")
+  output$keepAlive <- renderText({
+    req(input$count)
+    paste("keep alive ", input$count)
+  })
+  
+  #session$allowReconnect("force")
   
     #shapeFile <- read_sf(dsn = "./www/Layers_DISTRICTS-polygon.shx")
     districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
