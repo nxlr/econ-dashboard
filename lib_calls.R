@@ -1,6 +1,5 @@
 library(shiny)
-library(shinydashboard)
-library(shinydashboardPlus)
+library(bs4Dash)
 library(shinyWidgets)
 library(dplyr)
 library(plotly)
