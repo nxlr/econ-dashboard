@@ -33,10 +33,17 @@ gdpUI <- function(id) {
                       c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
           )
         ),
-        tabPanel("GDP", plotlyOutput(ns("gdpBars"))),
-        tabPanel("GDP Tree Map", plotlyOutput(ns("gdpTreeMap"))),
-        tabPanel("District GDP", plotlyOutput(ns("districtGDP"))),
-        tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")))
+        tabPanel("GDP", plotlyOutput(ns("gdpBars")), 
+                 HTML("<br/>"), DTOutput(ns("gdpTable"))), 
+                 
+        tabPanel("GDP Tree Map", plotlyOutput(ns("gdpTreeMap")),
+                 HTML("<br/>"), DTOutput(ns("gdpTreeMapTable"))),
+        
+        tabPanel("District GDP", plotlyOutput(ns("districtGDP")),
+                 HTML("<br/>"), DTOutput(ns("districtGDPTable"))),
+        
+        tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")),
+                 HTML("<br/>"), DTOutput(ns("sectorGDPTable")))
         
       )
       
@@ -59,7 +66,17 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       updateBoxSidebar("gdpSidebar")
     })
     
-    
+    # GDP Table
+    output$gdpTable <- renderDT({
+      datatable(stateGDP, rownames = FALSE,
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
     
     # State GDP Bar Plot with Trend
     output$gdpBars <- renderPlotly({
@@ -96,6 +113,17 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       df2 <- districtGDP %>% filter(districtGDP$Year==input$yearGDP)
     })
     
+    # District GDP Tree Map Table
+    output$gdpTreeMapTable <- renderDT({
+      datatable(dta2(), rownames = FALSE,
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
     
     # GDP Tree Map
     output$gdpTreeMap <- renderPlotly({
@@ -130,6 +158,19 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       req(input$district)
       df1 <- districtGDP %>% filter(districtGDP$District==input$district)
     })
+    
+    # District GDP Table
+    output$districtGDPTable <- renderDT({
+      datatable(dta1(), rownames = FALSE,
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
+    
     # District GDP Bar Plot with Trend
     output$districtGDP <- renderPlotly({
       
@@ -162,6 +203,18 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     sectoralGDP_react <- reactive({
       req(input$sectorYear)
       sect <- sectoralGDP %>% filter(sectoralGDP$Year==input$sectorYear)
+    })
+    
+    # Sectoral GDP Table
+    output$sectorGDPTable <- renderDT({
+      datatable(sectoralGDP_react(), rownames = FALSE,
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
     })
     
     # Sectoral GDP Plot
