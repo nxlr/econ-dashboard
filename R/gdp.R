@@ -34,7 +34,7 @@ gdpUI <- function(id) {
           )
         ),
         tabPanel("GDP", plotlyOutput(ns("gdpBars"))),
-        tabPanel("", plotlyOutput(ns("gdpTreeMap"))),
+        tabPanel("GDP Tree Map", plotlyOutput(ns("gdpTreeMap"))),
         tabPanel("District GDP", plotlyOutput(ns("districtGDP"))),
         tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")))
         
@@ -46,6 +46,20 @@ gdpUI <- function(id) {
 
 gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
   moduleServer(id, function(input, output, session) {
+    
+    observeEvent(input$yearGDP, {
+      updateBoxSidebar("gdpSidebar")
+    })
+    
+    observeEvent(input$district, {
+      updateBoxSidebar("gdpSidebar")
+    })
+    
+    observeEvent(input$sectorYear, {
+      updateBoxSidebar("gdpSidebar")
+    })
+    
+    
     
     # State GDP Bar Plot with Trend
     output$gdpBars <- renderPlotly({

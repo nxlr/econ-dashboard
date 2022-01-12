@@ -28,6 +28,10 @@ industryUI <- function(id) {
 industryServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    observeEvent(input$indusYear, {
+      updateBoxSidebar("industrySidebar")
+    })
+    
     # State - Industry and Number of Workers
     indusReact <- reactive({
       req(input$indusYear)
