@@ -68,7 +68,8 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     
     # GDP Table
     output$gdpTable <- renderDT({
-      datatable(stateGDP, rownames = FALSE,
+      datatable(stateGDP, rownames = TRUE,
+                caption = "State GDP in Rs. Lakhs",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
                   autoWidht = TRUE,
