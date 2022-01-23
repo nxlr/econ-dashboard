@@ -181,7 +181,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # District GDP Bar Plot with Trend
     output$districtGDP <- renderPlotly({
       
-      plot_ly(data = dta1(), x = ~Year, y = ~GDP, type = 'bar', color = ~GDP,
+      plot_ly(data = dta1(), x = ~Year, y = ~GDP, type = 'bar',
               marker=list(color=~GDP, showscale=FALSE),
               hovertemplate = "GDP: %{y:.0f} Lakhs <br>(%{x})</br><extra></extra>") %>%
         add_lines(y = ~GDP, showlegend=FALSE, color = 'gray') %>%
@@ -201,8 +201,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                yaxis = list(title = "GDP (2011-12 Prices)", 
                             tickprefix = '₹'),
                paper_bgcolor='#fff0d8',
-               plot_bgcolor='#fff0d8',
-               legend = list(title=list(text="Year", font=list(size=16, family="Lato")))
+               plot_bgcolor='#fff0d8'
         )    
     })
     
