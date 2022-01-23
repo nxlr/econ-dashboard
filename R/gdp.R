@@ -68,7 +68,11 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     
     # GDP Table
     output$gdpTable <- renderDT({
+      
+      #'arg' should be one of “default”, “bootstrap”, “bootstrap4”, “bootstrap5”, 
+      # “bulma”, “dataTables”, “foundation”, “jqueryui”, “semanticui”
       datatable(stateGDP, rownames = FALSE,
+                style = "bootstrap5",
                 caption = "State GDP in Rs. Lakhs",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
@@ -117,6 +121,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # District GDP Tree Map Table
     output$gdpTreeMapTable <- renderDT({
       datatable(dta2(), rownames = FALSE,
+                style = "bootstrap5",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
                   autoWidht = TRUE,
@@ -163,6 +168,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # District GDP Table
     output$districtGDPTable <- renderDT({
       datatable(dta1(), rownames = FALSE,
+                style = "bootstrap5",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
                   autoWidht = TRUE,
@@ -209,6 +215,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # Sectoral GDP Table
     output$sectorGDPTable <- renderDT({
       datatable(sectoralGDP_react(), rownames = FALSE,
+                style = "bootstrap5",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
                   autoWidht = TRUE,
