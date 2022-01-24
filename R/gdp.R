@@ -2,52 +2,52 @@ gdpUI <- function(id) {
   ns <- NS(id)
   
   tagList(
-      tabBox(
-        id = ns("gdp"),
-        title = "",
-        type = "tabs",
-        width = 12,
-        closable = FALSE,
-        solidHeader = TRUE,
-        headerBorder = TRUE,
-        collapsible = TRUE,
-        maximizable = TRUE,
-        elevation = 4,
-        sidebar = boxSidebar(
-          id = ns("gdpSidebar"),
-          selectInput(
-            inputId = ns("yearGDP"),
-            label = "Year",
-            c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
-          ),
-          selectInput(
-            inputId = ns("district"),
-            label = "District",
-            c("Panchkula","Ambala","Yamunanagar","Kurushetra","Kaithal",
-              "Karnal","Sirsa","Jind","Fatehabad","Hisar","Panipat",
-              "Sonipat","Rohtak","Bhiwani","Jhajjar","Gurugram",
-              "Faridabad","Rewari","Mahendragarh","Mewat","Palwal")
-          ),
-          selectInput(inputId = ns("sectorYear"), 
-                      label = "Year", 
-                      c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
-          )
+    tabBox(
+      id = ns("gdp"),
+      title = "",
+      type = "tabs",
+      width = 12,
+      closable = FALSE,
+      solidHeader = TRUE,
+      headerBorder = TRUE,
+      collapsible = TRUE,
+      maximizable = TRUE,
+      elevation = 4,
+      sidebar = boxSidebar(
+        id = ns("gdpSidebar"),
+        selectInput(
+          inputId = ns("yearGDP"),
+          label = "Year",
+          c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
         ),
-        tabPanel("GDP", plotlyOutput(ns("gdpBars")), 
-                 HTML("<br/>"), DTOutput(ns("gdpTable"))), 
-                 
-        tabPanel("GDP Tree Map", plotlyOutput(ns("gdpTreeMap")),
-                 HTML("<br/>"), DTOutput(ns("gdpTreeMapTable"))),
-        
-        tabPanel("District GDP", plotlyOutput(ns("districtGDP")),
-                 HTML("<br/>"), DTOutput(ns("districtGDPTable"))),
-        
-        tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")),
-                 HTML("<br/>"), DTOutput(ns("sectorGDPTable")))
-        
-      )
+        selectInput(
+          inputId = ns("district"),
+          label = "District",
+          c("Panchkula","Ambala","Yamunanagar","Kurushetra","Kaithal",
+            "Karnal","Sirsa","Jind","Fatehabad","Hisar","Panipat",
+            "Sonipat","Rohtak","Bhiwani","Jhajjar","Gurugram",
+            "Faridabad","Rewari","Mahendragarh","Mewat","Palwal")
+        ),
+        selectInput(inputId = ns("sectorYear"), 
+                    label = "Year", 
+                    c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
+        )
+      ),
+      tabPanel("GDP", plotlyOutput(ns("gdpBars")), 
+               HTML("<br/>"), DTOutput(ns("gdpTable"))), 
+      
+      tabPanel("GDP Tree Map", plotlyOutput(ns("gdpTreeMap")),
+               HTML("<br/>"), DTOutput(ns("gdpTreeMapTable"))),
+      
+      tabPanel("District GDP", plotlyOutput(ns("districtGDP")),
+               HTML("<br/>"), DTOutput(ns("districtGDPTable"))),
+      
+      tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")),
+               HTML("<br/>"), DTOutput(ns("sectorGDPTable")))
       
     )
+    
+  )
 }
 
 
@@ -236,14 +236,14 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
           "pie", hcaes(x = Sector, y = GVA),
           name = "Sectoral Distribution"
         ) %>%
-        hc_title(text = "Sectoral Distribution") %>%
+        hc_title(text = "Sectoral Distribution", align = "center") %>%
         hc_subtitle(text = "Source: DESA, Haryana") %>%
+        hc_colors(c("#a7db22", "#44475a", "#DB843D", "#6272a4", "#8be9fd", "#50fa7b",
+                  "#ffb86c", "#ff79c6", "#bd93f9", "#ff5555", "#f1fa8c", "#FFC22E",
+                  "#1f8f76")) %>%
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    pointFormat=paste('<br><b>{point.percentage:.1f}%</b>
                                      (GVA: {point.y} Lakhs)'))
-      #plot_ly(sectoralGDP_react(), labels = ~Sector, values = ~GVA, type = 'pie')
-      
-      
       
     })
   })
