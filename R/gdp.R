@@ -33,13 +33,13 @@ gdpUI <- function(id) {
                     c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
         )
       ),
-      tabPanel("GDP", plotlyOutput(ns("gdpBars")), 
+      tabPanel("GDP", highchartOutput(ns("gdpBars")), 
                HTML("<br/>"), DTOutput(ns("gdpTable"))), 
       
-      tabPanel("GDP Tree Map", plotlyOutput(ns("gdpTreeMap")),
+      tabPanel("GDP Tree Map", highchartOutput(ns("gdpTreeMap")),
                HTML("<br/>"), DTOutput(ns("gdpTreeMapTable"))),
       
-      tabPanel("District GDP", plotlyOutput(ns("districtGDP")),
+      tabPanel("District GDP", highchartOutput(ns("districtGDP")),
                HTML("<br/>"), DTOutput(ns("districtGDPTable"))),
       
       tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")),
@@ -84,32 +84,24 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     })
     
     # State GDP Bar Plot with Trend
-    output$gdpBars <- renderPlotly({
-      
-      plot_ly(data = stateGDP, x = ~Year, y = ~GSDP, type = 'bar',
-              marker=list(color=~GSDP, showscale=FALSE),
-              hovertemplate = '₹ %{y:.0f} Lakhs<extra></extra>') %>%
-        add_lines(y = ~GSDP, showlegend=FALSE, color = 'black') %>%
-        
-        config(displaylogo = FALSE,
-               modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d", "pan2d", 
-                                          "lasso2d", "hoverClosestCartesian",
-                                          "hoverCompareCartesian")
-        ) %>% 
-        layout(title = list(y=0.95, text="Haryana GDP (in ₹ Lakhs)",
-                            font=list(size=18, family="Lato")),
-               showlegend=F,
-               annotations = list(
-                 list(x = -0.1 , y = -0.28, text = "Source: DESA, Haryana",
-                      font=list(color="grey", family="Courier New, monospace", size=12),
-                      showarrow = F, xref='paper', yref='paper')),
-               
-               xaxis = list(side="right", showgrid=FALSE, title = "Year"),
-               yaxis = list(title = "GDP (2011-12 Prices)", 
-                            tickprefix = '₹'),
-               paper_bgcolor='#fff0d8',
-               plot_bgcolor='#fff0d8'
-        )
+    
+    output$gdpBars <- renderHighchart({
+      hc <- stateGDP %>% 
+        hchart(type = 'column', hcaes(x = Year, y = GSDP, color = GSDP)) %>%
+        hc_title(text = "Haryana GDP (in ₹ Lakhs)",
+                 align = "center") %>% 
+        hc_subtitle(text = "(at 2011-12 Prices)", 
+                    align = "center") %>%
+        hc_yAxis(text = paste("GDP")) %>%
+        hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
+                   headerFormat = paste("<b>Year: {point.key}</b>"),
+                   pointFormat = paste("</br><b>GDP: {point.y} ₹ Lakhs</b>")) %>%
+        hc_credits(
+          enabled = TRUE,
+          text = "Source: DESA, Haryana",
+          href = "https://esaharyana.gov.in/"
+        ) %>%
+        hc_add_theme(hc_theme_smpl())
     })
     
     # User Input for GDP Tree 
@@ -132,32 +124,55 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     })
     
     # GDP Tree Map
-    output$gdpTreeMap <- renderPlotly({
-      plot_ly(
-        type = 'treemap',
-        labels= dta2()$District,
-        parents = c(""), 
-        values = dta2()$GDP,
-        hovertemplate = paste("District :", dta2()$District,
-                              "<br> GDP : ₹ ", dta2()$GDP, " Lakhs",
-                              "<extra></extra>"),
-        texttemplate = paste(dta2()$District,
-                             "<br>", format(round(dta2()$Percent, 2), nsmall = 2),
-                             "%"),
-        marker=list(colorscale='Hot')
-        #marker=list(colors=c("lightgreen", "aqua", "yellow", "purple", "#FFF", "lightgray", "pink"))
-      ) %>%
-        config(displaylogo = FALSE) %>% 
-        layout(title = list(y=0.98, text=paste("Haryana GDP Distribution (in ", input$yearGDP, ")"),
-                            font=list(size=18, family="Lato")),
-               annotations = list(
-                 list(x = 0.0 , y = -0.1, text = "Source: DESA, Haryana",
-                      font=list(color="grey", family="Courier New, monospace", size=12),
-                      showarrow = F, xref='paper', yref='paper')),
-               paper_bgcolor='#fff0d8',
-               plot_bgcolor='#fff0d8'
-        )    
+    output$gdpTreeMap <- renderHighchart({
+      hc <- dta2() %>%
+        hchart(
+          type = "treemap", 
+          hcaes(x = District, value = GDP, color = GDP)
+        ) %>%
+        hc_colorAxis(stops = color_stops(colors = viridis::inferno(10))) %>%
+        hc_title(text = "Haryana District GDP Tree-Map",
+                 align = "center") %>% 
+        hc_subtitle(text = "(at 2011-12 Prices)", 
+                    align = "center") %>%
+        hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
+                   headerFormat = paste("<b>District: {point.key}</b>"),
+                   pointFormat = paste("</br><b>GDP: {point.value} ₹ Lakhs</b>")) %>%
+        hc_credits(
+          enabled = TRUE,
+          text = "Source: DESA, Haryana",
+          href = "https://esaharyana.gov.in/"
+        ) %>%
+        hc_add_theme(hc_theme_smpl())
+      
     })
+    
+    # output$gdpTreeMap <- renderPlotly({
+    #   plot_ly(
+    #     type = 'treemap',
+    #     labels= dta2()$District,
+    #     parents = c(""), 
+    #     values = dta2()$GDP,
+    #     hovertemplate = paste("District :", dta2()$District,
+    #                           "<br> GDP : ₹ ", dta2()$GDP, " Lakhs",
+    #                           "<extra></extra>"),
+    #     texttemplate = paste(dta2()$District,
+    #                          "<br>", format(round(dta2()$Percent, 2), nsmall = 2),
+    #                          "%"),
+    #     marker=list(colorscale='Hot')
+    #     #marker=list(colors=c("lightgreen", "aqua", "yellow", "purple", "#FFF", "lightgray", "pink"))
+    #   ) %>%
+    #     config(displaylogo = FALSE) %>% 
+    #     layout(title = list(y=0.98, text=paste("Haryana GDP Distribution (in ", input$yearGDP, ")"),
+    #                         font=list(size=18, family="Lato")),
+    #            annotations = list(
+    #              list(x = 0.0 , y = -0.1, text = "Source: DESA, Haryana",
+    #                   font=list(color="grey", family="Courier New, monospace", size=12),
+    #                   showarrow = F, xref='paper', yref='paper')),
+    #            paper_bgcolor='#fff0d8',
+    #            plot_bgcolor='#fff0d8'
+    #     )    
+    # })
     
     # User Input for District 
     dta1 <- reactive({
@@ -179,30 +194,23 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     })
     
     # District GDP Bar Plot with Trend
-    output$districtGDP <- renderPlotly({
-      
-      plot_ly(data = dta1(), x = ~Year, y = ~GDP, type = 'bar',
-              marker=list(color=~GDP, showscale=FALSE),
-              hovertemplate = "GDP: %{y:.0f} Lakhs <br>(%{x})</br><extra></extra>") %>%
-        add_lines(y = ~GDP, showlegend=FALSE, color = 'gray') %>%
-        config(displaylogo = FALSE,
-               modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d", "pan2d", 
-                                          "lasso2d", "hoverClosestCartesian",
-                                          "hoverCompareCartesian")
-        ) %>% 
-        layout(title = list(y=0.95, text=paste(input$district, "GDP (in ₹ Lakhs)",sep=" "),
-                            font=list(size=18, family="Lato")),
-               annotations = list(
-                 list(x = 0.0 , y = -0.12, text = "Source: DESA, Haryana",
-                      font=list(color="grey", family="Courier New, monospace", size=12),
-                      showarrow = F, xref='paper', yref='paper')),
-               
-               xaxis = list(title = "Year"),
-               yaxis = list(title = "GDP (2011-12 Prices)", 
-                            tickprefix = '₹'),
-               paper_bgcolor='#fff0d8',
-               plot_bgcolor='#fff0d8'
-        )    
+    output$districtGDP <- renderHighchart({
+      hc <- dta1() %>% 
+        hchart(type = 'column', hcaes(x = Year, y = GDP, color = GDP)) %>%
+        hc_title(text = paste(input$district, "GDP (in ₹ Lakhs)",sep=" "),
+                 align = "center") %>% 
+        hc_subtitle(text = "(at 2011-12 Prices)", 
+                    align = "center") %>%
+        hc_yAxis(text = paste("District GDP")) %>%
+        hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
+                   headerFormat = paste("<b>Year: {point.key}</b>"),
+                   pointFormat = paste("</br><b>GDP: {point.y} ₹ Lakhs</b>")) %>%
+        hc_credits(
+            enabled = TRUE,
+            text = "Source: DESA, Haryana",
+            href = "https://esaharyana.gov.in/"
+        ) %>%
+        hc_add_theme(hc_theme_smpl())
     })
     
     # User Input Year for State Sectoral GDP
