@@ -137,12 +137,16 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                     align = "center") %>%
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    headerFormat = paste("<b>District: {point.key}</b>"),
-                   pointFormat = paste("</br><b>GDP: {point.value} ₹ Lakhs</b>")) %>%
+                   pointFormat = paste("</br><b>GDP: {point.value} ₹ Lakhs</b>
+                                       </br><b>Percentage: {point.percentage:.1f} %</b>"),
+                   ) %>%
+
         hc_credits(
           enabled = TRUE,
           text = "Source: DESA, Haryana",
           href = "https://esaharyana.gov.in/"
         ) %>%
+        
         hc_add_theme(hc_theme_smpl())
       
     })
@@ -250,7 +254,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                   "#ffb86c", "#ff79c6", "#bd93f9", "#ff5555", "#f1fa8c", "#FFC22E",
                   "#1f8f76")) %>%
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
-                   pointFormat=paste('<br><b>{point.percentage:.1f}%</b>
+                   pointFormat=paste('</br><b>{point.percentage:.1f}%</b>
                                      (GVA: {point.y} Lakhs)'))
       
     })

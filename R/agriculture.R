@@ -1,6 +1,29 @@
 agricultureUI <- function(id) {
   ns <- NS(id)
   tagList(
+    tabBox(
+      id = ns("agriculture"),
+      title = "",
+      type = "tabs",
+      width = 12,
+      closable = FALSE,
+      solidHeader = TRUE,
+      headerBorder = TRUE,
+      collapsible = TRUE,
+      maximizable = TRUE,
+      elevation = 4,
+      sidebar = boxSidebar(
+        id = ns("agricultureSidebar"),
+        varSelectInput(
+          inputId = ns("irrigationVar"),
+          label = "Irrigation Data",
+          irrigation_data %>% select(-one_of("Year", "District"))
+        )
+      ),
+      tabPanel("Irrigation", DTOutput(ns("irrigationTable")),
+               HTML("</br>"), highchartOutput(ns("irrigationPlot")))
+      
+    )
     
   )
 }
@@ -8,6 +31,37 @@ agricultureUI <- function(id) {
 
 agricultureServer <- function(id) {
   moduleServer(id, function(input, output, session) {
+    
+    observeEvent(input$irrigationVar, {
+      updateBoxSidebar("agricultureSidebar")
+    })
+    
+    # Filter irrigation Data
+    irrigationData <- reactive({
+      irrigation_data %>% dplyr::select("Year", "District", input$irrigationVar)
+      colnames(irrigation_data) <- c('Year','District','Irrigated Area')
+    })
+     
+    # Irrigation Variable Table
+    output$irrigationTable <- renderDT({
+      datatable(irrigationData(), 
+                rownames = F,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
+    
+    # Irrigation Data Plot
+    output$irrigationPlot <- renderHighchart({
+      hc <- irrigationData() %>%
+      hchart('streamgraph', hcaes(x = Year, y = `Irrigated Area`, group = District))
+    })
     
   })
 }
