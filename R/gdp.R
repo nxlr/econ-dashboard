@@ -265,13 +265,14 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # Sectoral GDP Trend
     output$sectorGDPtrend <- renderHighchart({
       cols <- brewer.pal(12, "Set3")
-      hchart(sectoralGDP, "column",
+      hchart(sectoralGDP, "streamgraph",
              hcaes(Year, GVA, group = Sector),
              stacking = "percent",
              borderWidth = 0,
              groupPadding = 0,
              pointPadding  = 0) %>%
         hc_colors(cols) %>%
+        hc_size(height = 400) %>%
         hc_yAxis(visible = FALSE)
     })
     
