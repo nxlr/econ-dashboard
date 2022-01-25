@@ -15,15 +15,17 @@ laborUI <- function(id) {
                     label = " Age Group", 
                     c("15-29","15 and above","All ages"))
       ),
-      tabPanel("Overall Distribution", plotlyOutput(ns("allLaborPlot"))),
-      tabPanel("Education-wise Distribution", textOutput(ns("edLaborPlot"))),
-      tabPanel("Sectoral Distribution", plotlyOutput(ns("sectoralLaborPlot")))
+      tabPanel("Overall Distribution", plotlyOutput(ns("allLaborPlot")),
+               HTML("<br/>"), DTOutput(ns("allLaborTable"))), 
+      tabPanel("Education-wise Distribution", DTOutput(ns("edLaborTable"))), 
+      tabPanel("Sectoral Distribution", plotlyOutput(ns("sectoralLaborPlot")),
+               HTML("<br/>"), DTOutput(ns("sectoralLaborTable")))
     )
   )
 }
 
 
-laborServer <- function(id) {
+laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
   moduleServer(id, function(input, output, session) {
     
     observeEvent(input$yearLabor, {
@@ -44,6 +46,19 @@ laborServer <- function(id) {
       
     })
     
+    output$allLaborTable <- renderDT({
+      datatable(allLaborReact(), rownames = FALSE,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
+    
     # State - Labor by Education
     edLaborReact <- reactive({
       req(input$yearLabor)
@@ -52,6 +67,19 @@ laborServer <- function(id) {
       edLabor_data <- edLabor_data %>% filter(edLabor_data$Year == input$yearLabor) 
       df5 <- edLabor_data %>% filter(edLabor_data$Age == input$ageLabor)                                
       
+    })
+    
+    output$edLaborTable <- renderDT({
+      datatable(edLaborReact(), rownames = FALSE,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
     })
     
     # State - Labor by Sector
@@ -64,14 +92,26 @@ laborServer <- function(id) {
       
     })
     
+    output$sectoralLaborTable <- renderDT({
+      datatable(sectoralLaborReact(), rownames = FALSE,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
     
     output$allLaborPlot <- renderPlotly({
       rural <- allLaborReact() %>% filter(allLaborReact()$Sector == "Rural") %>%
         group_by(Gender) %>% 
         arrange(Gender) %>%
         plot_ly(
-          x = ~variable, 
-          y = ~value,
+          x = ~Variable, 
+          y = ~Value,
           color= ~Gender,
           colors = 'Pastel1',
           type = 'bar',
@@ -84,8 +124,8 @@ laborServer <- function(id) {
         group_by(Gender) %>% 
         arrange(Gender) %>%
         plot_ly(
-          x = ~variable, 
-          y = ~value, 
+          x = ~Variable, 
+          y = ~Value, 
           color= ~Gender,
           colors = 'Pastel1',
           type = 'bar',
@@ -98,8 +138,8 @@ laborServer <- function(id) {
         group_by(Gender) %>% 
         arrange(Gender) %>%
         plot_ly(
-          x = ~variable, 
-          y = ~value, 
+          x = ~Variable, 
+          y = ~Value, 
           color= ~Gender,
           colors = 'Pastel1',
           type = 'bar',
@@ -113,50 +153,45 @@ laborServer <- function(id) {
                yaxis = list(title = "Rates"))
     })
     
-    output$edLaborPlot <- renderText({
-      paste("Coming Soon...")
-      
-    })
-    
     output$sectoralLaborPlot <- renderPlotly({
       rural <- sectoralLaborReact() %>% filter(sectoralLaborReact()$Sector == "Rural") %>%
-        group_by(variable) %>% 
-        arrange(variable) %>%
+        group_by(Variable) %>% 
+        arrange(Variable) %>%
         plot_ly(
           x = ~Gender, 
-          y = ~value,
-          color= ~variable,
+          y = ~Value,
+          color= ~Variable,
           colors = 'Pastel2',
           type = 'bar',
-          legendgroup =~variable,
+          legendgroup =~Variable,
           hovertemplate = "%{y:.2f}%",
           showlegend = T) %>% 
         layout(xaxis = list(title = "Rural"))
       
       urban <- sectoralLaborReact() %>% filter(sectoralLaborReact()$Sector == "Urban") %>%
-        group_by(variable) %>% 
-        arrange(variable) %>%
+        group_by(Variable) %>% 
+        arrange(Variable) %>%
         plot_ly(
           x = ~Gender, 
-          y = ~value, 
-          color= ~variable,
+          y = ~Value, 
+          color= ~Variable,
           colors = 'Pastel2',
           type = 'bar',
-          legendgroup =~variable,
+          legendgroup =~Variable,
           hovertemplate = "%{y:.2f}%",
           showlegend = F) %>% 
         layout(xaxis = list(title = "Urban"))
       
       total <- sectoralLaborReact() %>% filter(sectoralLaborReact()$Sector == "Rural+Urban") %>%
-        group_by(variable) %>% 
-        arrange(variable) %>%
+        group_by(Variable) %>% 
+        arrange(Variable) %>%
         plot_ly(
           x = ~Gender, 
-          y = ~value, 
-          color= ~variable,
+          y = ~Value, 
+          color= ~Variable,
           colors = 'Pastel2',
           type = 'bar',
-          legendgroup =~variable,
+          legendgroup =~Variable,
           hovertemplate = "%{y:.2f}%",
           showlegend = F) %>% 
         layout(xaxis = list(title = "Rural+Urban"))
@@ -164,6 +199,10 @@ laborServer <- function(id) {
       subplot(rural, urban, total ,titleX = T, shareY = T) %>% 
         layout(barmode = 'stack', showlegend = T,
                yaxis = list(title = "Sectoral Distribution of Labor"))
+    })
+    
+    output$edLaborPlot <- renderHighchart({
+      
     })
     
   })

@@ -19,7 +19,8 @@ industryUI <- function(id) {
           label = "Year",
           c("2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12", "2010-11"))
       ),
-      tabPanel("Factories and Workers Scatter-Plot", plotlyOutput(ns("industryScatter")))
+      tabPanel("Factories and Workers Scatter-Plot", highchartOutput(ns("industryBubble")),
+               HTML("<br/>"), DTOutput(ns("industryTable")))
     )
   )
 }
@@ -38,50 +39,47 @@ industryServer <- function(id) {
       df3 <- indusData %>% filter(indusData$Year==input$indusYear)
     })
     
-    output$industryScatter <- renderPlotly({
-      m <- list(
-        l = 70,
-        r = 50,
-        b = 80,
-        t = 30,
-        pad = 1
-      )
-      plot_ly(data=indusReact(), x=~`Number of Registered Working Factories`,
-              y=~`No. of Workers Employed`,
-              mode = 'markers',
-              size = ~`Number of Registered Working Factories`,
-              sizes = c(100,1000),
-              color = ~District,
-              colors = "Set2",
-              marker = list(opacity = 0.6, sizemode = 'area')
-      )%>%
-        
-        config(modeBarButtonsToRemove = c("zoomIn2d", "zoomOut2d", "pan2d", 
-                                          "lasso2d", "hoverClosestCartesian",
-                                          "hoverCompareCartesian"),
-               displaylogo = FALSE) %>% 
-        layout(title = list(y=0.98, 
-                            text=paste("Factories and Workers in Districts (",
-                                       input$indusYear, 
-                                       ")"),
-                            font=list(size=16, family="Lato")),
-               showlegend=T,
-               margin = m,
-               annotations = list(
-                 list(x = 1.2 , y = -0.12, text = "Source: DESA, Haryana",
-                      font=list(color="grey", family="Courier New, monospace", size=12),
-                      showarrow = F, xref='paper', yref='paper')),
-               
-               xaxis = list(side="right", showgrid=T, 
-                            title = "Number of Registered Working Factories (log)",
-                            type = "log",
-                            dtick = 1),
-               yaxis = list(title = "Number of Workers Employed (log)",  showgrid=T,
-                            type = "log",
-                            dtick = 1),
-               paper_bgcolor='#fff0d8',
-               plot_bgcolor='#fff0d8'
-        ) 
+    output$industryTable <- renderDT({
+      datatable(indusReact(), rownames = FALSE,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
+    
+    output$industryBubble <- renderHighchart({
+      cols <- brewer.pal(12, "Set1")
+      hc <- indusReact() %>% 
+        hchart(
+          'bubble', hcaes(x = `Number of Registered Working Factories`, 
+                           y = `No. of Workers Employed`, 
+                           size = `Number of Registered Working Factories`,
+                           group = District),
+          maxSize = "20%"
+        ) %>%
+        hc_title(text = paste("Factories and Workers in Districts (",
+                              input$indusYear, 
+                              ")"),
+                 align = "center") %>%
+        hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
+                   headerFormat = paste("<b>District: {series.name}</b> </br>
+                                        <b>Number of Registered Working Factories: {point.key}</b>"),
+                   pointFormat = paste("</br><b>Number of Workers Employed: {point.y}</b>")) %>%
+        hc_credits(
+          enabled = TRUE,
+          text = "Source: DESA, Haryana",
+          href = "https://esaharyana.gov.in/"
+        ) %>%
+        hc_legend(enabled = TRUE, layout= 'horizontal') %>%
+        hc_yAxis(type="logarithmic") %>%
+        hc_xAxis(type= "logarithmic", max=4000) %>%
+        hc_colors(cols) %>%
+        hc_add_theme(hc_theme_smpl())
     })
     
   })

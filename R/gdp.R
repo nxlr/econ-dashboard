@@ -133,7 +133,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
           hcaes(x = District, value = GDP, color = GDP)
         ) %>%
         hc_colorAxis(stops = color_stops(colors = viridis::inferno(10))) %>%
-        hc_title(text = "Haryana District GDP Tree-Map",
+        hc_title(text = paste("Haryana District GDP Tree-Map (", input$yearGDP, ")"),
                  align = "center") %>% 
         hc_subtitle(text = "(at 2011-12 Prices)", 
                     align = "center") %>%
