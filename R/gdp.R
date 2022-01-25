@@ -42,8 +42,10 @@ gdpUI <- function(id) {
       tabPanel("District GDP", highchartOutput(ns("districtGDP")),
                HTML("<br/>"), DTOutput(ns("districtGDPTable"))),
       
-      tabPanel("Sectoral GDP", highchartOutput(ns("sectorGDP")),
-               HTML("<br/>"), DTOutput(ns("sectorGDPTable")))
+      tabPanel("Sectoral GDP Distribution", highchartOutput(ns("sectorGDP")),
+               HTML("<br/>"), DTOutput(ns("sectorGDPTable"))),
+      
+      tabPanel("Sectoral GDP Trend", highchartOutput(ns("sectorGDPtrend")))
       
     )
     
@@ -138,7 +140,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    headerFormat = paste("<b>District: {point.key}</b>"),
                    pointFormat = paste("</br><b>GDP: {point.value} ₹ Lakhs</b>
-                                       </br><b>Percentage: {point.percentage:.1f} %</b>"),
+                                       </br><b>Percentage: {point.percentage:.1f} %</b>")
                    ) %>%
 
         hc_credits(
@@ -248,7 +250,8 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
           "pie", hcaes(x = Sector, y = GVA),
           name = "Sectoral Distribution"
         ) %>%
-        hc_title(text = "Sectoral Distribution", align = "center") %>%
+        hc_title(text = paste("Sectoral Distribution (", input$sectorYear,")"), 
+                 align = "center") %>%
         hc_subtitle(text = "Source: DESA, Haryana") %>%
         hc_colors(c("#a7db22", "#44475a", "#DB843D", "#6272a4", "#8be9fd", "#50fa7b",
                   "#ffb86c", "#ff79c6", "#bd93f9", "#ff5555", "#f1fa8c", "#FFC22E",
@@ -258,5 +261,19 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                                      (GVA: {point.y} Lakhs)'))
       
     })
+    
+    # Sectoral GDP Trend
+    output$sectorGDPtrend <- renderHighchart({
+      cols <- brewer.pal(12, "Set3")
+      hchart(sectoralGDP, "column",
+             hcaes(Year, GVA, group = Sector),
+             stacking = "percent",
+             borderWidth = 0,
+             groupPadding = 0,
+             pointPadding  = 0) %>%
+        hc_colors(cols) %>%
+        hc_yAxis(visible = FALSE)
+    })
+    
   })
 }
