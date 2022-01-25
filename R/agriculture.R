@@ -39,7 +39,6 @@ agricultureServer <- function(id) {
     # Filter irrigation Data
     irrigationData <- reactive({
       irrigation_data %>% dplyr::select("Year", "District", input$irrigationVar)
-      colnames(irrigation_data) <- c('Year','District','Irrigated Area')
     })
      
     # Irrigation Variable Table
@@ -57,10 +56,15 @@ agricultureServer <- function(id) {
                 class = 'cell-border stripe')
     })
     
+    df <- reactive({
+      df <- irrigationData() %>% setNames(c("Year", "District", "Irrigated Area"))
+    })
+    
     # Irrigation Data Plot
     output$irrigationPlot <- renderHighchart({
-      hc <- irrigationData() %>%
-      hchart('streamgraph', hcaes(x = Year, y = `Irrigated Area`, group = District))
+      hc <- df() %>%
+      hchart('streamgraph', hcaes(x = Year, y = `Irrigated Area`, 
+                                  group = District, color = District))
     })
     
   })
