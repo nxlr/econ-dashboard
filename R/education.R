@@ -49,6 +49,10 @@ educationServer <- function(id) {
         hchart('column', hcaes(x = Gender, y = `Literacy Rate`, 
                                group = Year),
         ) %>%
+        hc_title(text = paste("Literacy Rate"),
+                 align = "center") %>%
+        hc_subtitle(text = paste("Source: PLFS"),
+                 align = "center") %>%
         hc_plotOptions(series = list(stacking = "normal")) %>%
         hc_xAxis(categories = literacyData$Sector) %>%
         hc_colors(cols)

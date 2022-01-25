@@ -68,6 +68,8 @@ agricultureServer <- function(id) {
       hchart('streamgraph', hcaes(x = Year, y = `Irrigated Area`, 
                                   group = District)
              ) %>%
+        hc_title(text = paste(input$irrigationVar),
+                 align = "center") %>%
         hc_colors(cols)
     })
     
