@@ -243,7 +243,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       
       # Set highcharter options
       options(highcharter.theme = hc_theme_smpl(tooltip = list(valueDecimals = 2)))
-      
+      cols <- brewer.pal(12, "Set3")
       
       hc <- sectoralGDP_react() %>%
         hchart(
@@ -253,9 +253,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
         hc_title(text = paste("Sectoral Distribution (", input$sectorYear,")"), 
                  align = "center") %>%
         hc_subtitle(text = "Source: DESA, Haryana") %>%
-        hc_colors(c("#a7db22", "#44475a", "#DB843D", "#6272a4", "#8be9fd", "#50fa7b",
-                  "#ffb86c", "#ff79c6", "#bd93f9", "#ff5555", "#f1fa8c", "#FFC22E",
-                  "#1f8f76")) %>%
+        hc_colors(cols) %>%
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    pointFormat=paste('</br><b>{point.percentage:.1f}%</b>
                                      (GVA: {point.y} Lakhs)'))
