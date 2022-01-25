@@ -15,4 +15,5 @@ sectoralLabor_data <- melt(sectoralLabor_data_tmp, id=c("Year", "Age", "Sector",
 irrigation_data <- read_excel("./datasets/agriculture/Irrigation.xlsx")
 financeData <- read_excel("./datasets/finance/finance_overall.xlsx")
 literacyData <- read_excel("./datasets/education/literacy_rate.xlsx")
+healthData <- read_excel("./datasets/health/Health.xlsx")
 #indus1 <- as.data.frame(read_excel("./datasets/industry/indus1.xlsx"))
