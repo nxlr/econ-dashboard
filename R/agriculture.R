@@ -65,12 +65,9 @@ agricultureServer <- function(id) {
       cols <- brewer.pal(12, "Set3")
       
       hc <- df() %>%
-      hchart('column', hcaes(x = Year, y = `Irrigated Area`, 
-                                  group = District),
-             stacking = "percent",
-             borderWidth = 0,
-             groupPadding = 0,
-             pointPadding  = 0) %>%
+      hchart('streamgraph', hcaes(x = Year, y = `Irrigated Area`, 
+                                  group = District)
+             ) %>%
         hc_colors(cols)
     })
     

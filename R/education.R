@@ -1,6 +1,24 @@
 educationUI <- function(id) {
   ns <- NS(id)
   tagList(
+    tabBox(
+      id = ns("education"),
+      title = "",
+      type = "tabs",
+      width = 12,
+      closable = FALSE,
+      solidHeader = TRUE,
+      headerBorder = TRUE,
+      collapsible = TRUE,
+      maximizable = TRUE,
+      elevation = 4,
+      sidebar = boxSidebar(
+        id = ns("educationSidebar")
+      ),
+      tabPanel("Literacy", highchartOutput(ns("literacyPlot")),
+               HTML("</br>"), DTOutput(ns("literacyTable")))
+      
+    )
     
   )
 }
@@ -8,6 +26,33 @@ educationUI <- function(id) {
 
 educationServer <- function(id) {
   moduleServer(id, function(input, output, session) {
+    
+    # Literacy Rate Table
+    output$literacyTable <- renderDT({
+      datatable(literacyData, 
+                rownames = F,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
+    
+    # Literacy Rate Plot
+    output$literacyPlot <- renderHighchart({
+      cols <- brewer.pal(12, "Set3")
+      hc <- literacyData %>%
+        hchart('column', hcaes(x = Gender, y = `Literacy Rate`, 
+                               group = Year),
+        ) %>%
+        hc_plotOptions(series = list(stacking = "normal")) %>%
+        hc_xAxis(categories = literacyData$Sector) %>%
+        hc_colors(cols)
+    })
     
   })
 }
