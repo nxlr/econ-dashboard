@@ -9,6 +9,26 @@ RUN apt-get update && \
     
 ## add any R packages here 
 RUN install2.r tidyverse\
+    shiny \ 
+    dplyr \ 
+    plotly \
+    ggthemes \
+    thematic \
+    showtext \
+    readxl \
+    tidyr \
+    ggstream \
+    viridis \
+    hrbrthemes \
+    reshape2 \
+    highcharter \
+    bs4Dash \
+    shinyWidgets \
+    waiter \
+    shinyalert \
+    DT \
+    RColorBrewer
+
 
     ## clean up
     && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
