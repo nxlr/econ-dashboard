@@ -1,5 +1,5 @@
 # This can change with the whatever version of R the app was built
-# sets the base image and OS on which the entire computer will be built
+# Sets the base image and OS on which the entire computer will be built
 FROM rocker/shiny:4.1.2
 
 ## update system libraries
