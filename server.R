@@ -1,11 +1,9 @@
 # Define server logic
 shinyServer(function(input, output, session) {
-
-  session$allowReconnect("force")
   
   gdpServer(state, stateGDP, districtGDP, sectoralGDP)
   agricultureServer(state)
-  laborServer(state)
+  laborServer(state, allLabor_data, edLabor_data, sectoralLabor_data)
   industryServer(state)
   financeServer(state)
   healthServer(state)
