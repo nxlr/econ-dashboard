@@ -10,8 +10,7 @@ RUN apt-get update && \
 ## required libraries
 RUN apt-get install build-essential -y \
     libxml2 \
-    libglpk40
-
+    libg
 ## Pre-install packages creating issues
 RUN R -e "install.packages(c('igraph', 'ggdag'), dependencies = T)"
 
