@@ -1,12 +1,20 @@
 # This can change with the whatever version of R the app was built
 # sets the base image and OS on which the entire computer will be built
-FROM rocker/shiny:latest
+FROM rocker/shiny:4.1.2
 
 ## update system libraries
 RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get clean
-    
+
+## required libraries
+RUN apt-get install build-essential -y \
+    libxml2 \
+    libglpk40
+
+## Pre-install packages creating issues
+RUN R -e "install.packages(c('igraph', 'ggdag'), dependencies = T)"
+
 ## add any R packages here 
 RUN install2.r tidyverse\
     shiny \ 
@@ -29,9 +37,8 @@ RUN install2.r tidyverse\
     DT \
     RColorBrewer
 
-
-    ## clean up
-    && rm -rf /tmp/downloaded_packages/ /tmp/*.rds
+## clean up
+RUN rm -rf /tmp/downloaded_packages/ /tmp/*.rds
 
 # The /app and /srv/shiny-server/ are two different arguments that relate to your local file and the 
 # file path in the container; not to be read as one string. 
