@@ -20,8 +20,16 @@ agricultureUI <- function(id) {
           irrigation_data %>% select(-one_of("Year", "District"))
         )
       ),
-      tabPanel("Irrigation", highchartOutput(ns("irrigationPlot")),
-               HTML("</br>"), DTOutput(ns("irrigationTable")))
+      tabPanel("Irrigation",
+               tabsetPanel(
+                 tabPanel("Plot",
+                          highchartOutput(ns("irrigationPlot"))
+                 ),
+                 tabPanel("Data", HTML("</br>"),
+                          DTOutput(ns("irrigationTable"))
+                 )
+               )
+      )
       
     )
     
