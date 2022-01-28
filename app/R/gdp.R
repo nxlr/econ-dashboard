@@ -7,6 +7,7 @@ gdpUI <- function(id) {
       title = "",
       type = "tabs",
       width = 12,
+      status = "olive",
       closable = FALSE,
       solidHeader = TRUE,
       headerBorder = TRUE,

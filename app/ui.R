@@ -2,6 +2,7 @@ shinyUI(dashboardPage(
   
   title = HTML("GJUST Economy Dashboard"),
   fullscreen = TRUE,
+  dark = NULL,
   header = dashboardHeader(
     title = dashboardBrand(
       title = "Economy Dashboard",
