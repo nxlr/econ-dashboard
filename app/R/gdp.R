@@ -10,7 +10,7 @@ gdpUI <- function(id) {
       closable = FALSE,
       solidHeader = TRUE,
       headerBorder = TRUE,
-      collapsible = TRUE,
+      collapsible = FALSE,
       maximizable = TRUE,
       elevation = 4,
       sidebar = boxSidebar(
@@ -33,20 +33,53 @@ gdpUI <- function(id) {
                     c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
         )
       ),
-      tabPanel("GDP", highchartOutput(ns("gdpBars")), 
-               HTML("<br/>"), DTOutput(ns("gdpTable"))), 
-      
-      tabPanel("GDP Tree Map", highchartOutput(ns("gdpTreeMap")),
-               HTML("<br/>"), DTOutput(ns("gdpTreeMapTable"))),
-      
-      tabPanel("District GDP", highchartOutput(ns("districtGDP")),
-               HTML("<br/>"), DTOutput(ns("districtGDPTable"))),
-      
-      tabPanel("Sectoral GDP Distribution", highchartOutput(ns("sectorGDP")),
-               HTML("<br/>"), DTOutput(ns("sectorGDPTable"))),
-      
-      tabPanel("Sectoral GDP Trend", highchartOutput(ns("sectorGDPtrend")))
-      
+      tabPanel("GDP",
+               tabsetPanel(
+                 tabPanel("Plot",
+                          highchartOutput(ns("gdpBars"))
+                 ),
+                 tabPanel("Data", HTML("</br>"),
+                          DTOutput(ns("gdpTable"))
+                 )
+               )
+      ),
+      tabPanel("GDP Tree Map",
+               tabsetPanel(
+                 tabPanel("Plot",
+                          highchartOutput(ns("gdpTreeMap"))
+                 ),
+                 tabPanel("Data", HTML("</br>"),
+                          DTOutput(ns("gdpTreeMapTable"))
+                 )
+               )
+      ),
+      tabPanel("District GDP",
+               tabsetPanel(
+                 tabPanel("Plot",
+                          highchartOutput(ns("districtGDP"))
+                 ),
+                 tabPanel("Data", HTML("</br>"),
+                          DTOutput(ns("districtGDPTable"))
+                 )
+               )
+      ),
+      tabPanel("Sectoral GDP Distribution",
+               tabsetPanel(
+                 tabPanel("Plot", 
+                          highchartOutput(ns("sectorGDP"))
+                 ),
+                 tabPanel("Data", HTML("</br>"),
+                          DTOutput(ns("sectorGDPTable"))
+                 )
+               )
+      ),
+      tabPanel("Sectoral GDP Trend",
+               tabsetPanel(
+                 tabPanel("Plot",
+                          highchartOutput(ns("sectorGDPtrend"))
+                 )
+               )
+      )
     )
     
   )
@@ -141,8 +174,8 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                    headerFormat = paste("<b>District: {point.key}</b>"),
                    pointFormat = paste("</br><b>GDP: {point.value} ₹ Lakhs</b>
                                        </br><b>Percentage: {point.percentage:.1f} %</b>")
-                   ) %>%
-
+        ) %>%
+        
         hc_credits(
           enabled = TRUE,
           text = "Source: DESA, Haryana",
@@ -212,9 +245,9 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                    headerFormat = paste("<b>Year: {point.key}</b>"),
                    pointFormat = paste("</br><b>GDP: {point.y} ₹ Lakhs</b>")) %>%
         hc_credits(
-            enabled = TRUE,
-            text = "Source: DESA, Haryana",
-            href = "https://esaharyana.gov.in/"
+          enabled = TRUE,
+          text = "Source: DESA, Haryana",
+          href = "https://esaharyana.gov.in/"
         ) %>%
         hc_add_theme(hc_theme_smpl())
     })
