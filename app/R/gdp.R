@@ -15,36 +15,13 @@ gdpUI <- function(id) {
       maximizable = TRUE,
       elevation = 4,
       sidebar = NULL,
-      tabPanel("GDP",
+      tabPanel("State GDP",
                tabsetPanel(
                  tabPanel("Plot",
                           highchartOutput(ns("gdpBars"))
                  ),
                  tabPanel("Data", HTML("</br>"),
                           DTOutput(ns("gdpTable"))
-                 )
-               )
-      ),
-      tabPanel("GDP Tree Map",
-               sidebarLayout(
-                 sidebarPanel(
-                   width = 2,
-                   selectInput(
-                     inputId = ns("yearGDP"),
-                     label = "Select Year",
-                     c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
-                   )
-                 ),
-                 mainPanel(
-                   width = 10,
-                   tabsetPanel(
-                     tabPanel("Plot",
-                              highchartOutput(ns("gdpTreeMap"))
-                     ),
-                     tabPanel("Data", HTML("</br>"),
-                              DTOutput(ns("gdpTreeMapTable"))
-                     )
-                   )
                  )
                )
       ),
@@ -74,7 +51,30 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("Sectoral GDP Distribution",
+      tabPanel("GDP Distribution (Districts)",
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(
+                     inputId = ns("yearGDP"),
+                     label = "Select Year",
+                     c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
+                   )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("gdpTreeMap"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("gdpTreeMapTable"))
+                     )
+                   )
+                 )
+               )
+      ),
+      tabPanel("GDP Distribution (Sector)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
