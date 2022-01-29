@@ -25,7 +25,7 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("District GDP",
+      tabPanel("District GDP (Trend)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
@@ -48,7 +48,7 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("GDP Distribution (Districts)",
+      tabPanel("Districts GDP (Treemap)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
@@ -71,7 +71,30 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("GDP Distribution (Sectors)",
+      tabPanel("Sector GSVA (Trend)",
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   varSelectInput(
+                     inputId = ns("gsvaVar"),
+                     label = "Select Sector",
+                     sectoralAll %>% select(-one_of("Year"))
+                   )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot", 
+                              highchartOutput(ns("gsvaPlot"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("gsvaTable"))
+                     )
+                   )
+                 )
+               )
+      ),
+      tabPanel("GSVA (Pie)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
@@ -94,10 +117,13 @@ gdpUI <- function(id) {
                )
       ),
       
-      tabPanel("Sectors GDP Trend",
+      tabPanel("GSVA (Stacked)",
                tabsetPanel(
                  tabPanel("Plot",
                           highchartOutput(ns("sectorGDPtrend"))
+                 ),
+                 tabPanel("Data",
+                   DTOutput(ns("sectorAll"))
                  )
                )
       )
@@ -276,6 +302,46 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
         hc_add_theme(hc_theme_smpl())
     })
     
+    # Filter GSVA Data
+    gsvaData <- reactive({
+      sectoralAll %>% dplyr::select("Year", input$gsvaVar)
+    })
+    
+    # GSVA Variable Table
+    output$gsvaTable <- renderDT({
+      datatable(gsvaData(), 
+                rownames = F,
+                style = "bootstrap5",
+                caption = "",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
+    })
+    
+    dv <- reactive({
+      dv <- gsvaData() %>% setNames(c("Year", "Indicator"))
+    })
+    
+    # GSVA Data Plot
+    output$gsvaPlot <- renderHighchart({
+      hc <- dv() %>% 
+        hchart(type = 'column', hcaes(x = Year, y = Indicator,
+                                      color = Indicator)) %>%
+        hc_title(text = paste(input$gsvaVar),
+                 align = "center") %>%
+        hc_credits(
+          enabled = TRUE,
+          text = "Source: DESA, Haryana",
+          href = "https://esaharyana.gov.in/"
+        ) %>%
+        hc_add_theme(hc_theme_smpl())
+    })
+    
+    
     # User Input Year for State Sectoral GDP
     sectoralGDP_react <- reactive({
       req(input$sectorYear)
@@ -316,6 +382,20 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                    pointFormat=paste('</br><b>{point.percentage:.1f}%</b>
                                      (GVA: {point.y} Lakhs)'))
       
+    })
+    
+    # Sector All Data Table
+    output$sectorAll <- renderDT({
+      datatable(sectoralAll, rownames = FALSE,
+                extensions = 'Responsive',
+                style = "bootstrap5",
+                options = list(
+                  columnDefs = list(list(className = 'dt-center', targets = c(1))),
+                  autoWidht = TRUE,
+                  pageLength = 5,
+                  lengthMenu = c(5, 10)
+                ),
+                class = 'cell-border stripe')
     })
     
     # Sectoral GDP Trend
