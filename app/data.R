@@ -5,7 +5,7 @@
 districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
 stateGDP <- read_excel("./datasets/gdp/state_gdp_2011_12_prices.xlsx")
 indusData <- read_excel("./datasets/industry/industry_haryana.xlsx")
-sectoralGDP <- read_excel("./datasets/gdp/sectoral_gdp.xlsx")
+sectoralGDP <- read_excel("./datasets/gdp/sectoral_gdp_transformed.xlsx")
 
 allLabor_data_tmp <- read_excel("./datasets/labor/labor_overall_haryana.xlsx")
 allLabor_data <- melt(allLabor_data_tmp, id=c("Year","Age","Sector","Gender"))

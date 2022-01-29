@@ -18,6 +18,7 @@ shinyUI(dashboardPage(
     controlbarIcon = icon("th"),
     fixed = TRUE
   ),
+  
   sidebar = dashboardSidebar(
     skin = "light",
     status = "olive",

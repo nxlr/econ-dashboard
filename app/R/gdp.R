@@ -14,26 +14,7 @@ gdpUI <- function(id) {
       collapsible = FALSE,
       maximizable = TRUE,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("gdpSidebar"),
-        selectInput(
-          inputId = ns("yearGDP"),
-          label = "Year",
-          c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
-        ),
-        selectInput(
-          inputId = ns("district"),
-          label = "District",
-          c("Panchkula","Ambala","Yamunanagar","Kurushetra","Kaithal",
-            "Karnal","Sirsa","Jind","Fatehabad","Hisar","Panipat",
-            "Sonipat","Rohtak","Bhiwani","Jhajjar","Gurugram",
-            "Faridabad","Rewari","Mahendragarh","Mewat","Palwal")
-        ),
-        selectInput(inputId = ns("sectorYear"), 
-                    label = "Year", 
-                    c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
-        )
-      ),
+      sidebar = NULL,
       tabPanel("GDP",
                tabsetPanel(
                  tabPanel("Plot",
@@ -45,32 +26,73 @@ gdpUI <- function(id) {
                )
       ),
       tabPanel("GDP Tree Map",
-               tabsetPanel(
-                 tabPanel("Plot",
-                          highchartOutput(ns("gdpTreeMap"))
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(
+                     inputId = ns("yearGDP"),
+                     label = "Select Year",
+                     c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
+                   )
                  ),
-                 tabPanel("Data", HTML("</br>"),
-                          DTOutput(ns("gdpTreeMapTable"))
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("gdpTreeMap"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("gdpTreeMapTable"))
+                     )
+                   )
                  )
                )
       ),
       tabPanel("District GDP",
-               tabsetPanel(
-                 tabPanel("Plot",
-                          highchartOutput(ns("districtGDP"))
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(
+                     inputId = ns("district"),
+                     label = "Select District",
+                     c("Panchkula","Ambala","Yamunanagar","Kurushetra","Kaithal",
+                       "Karnal","Sirsa","Jind","Fatehabad","Hisar","Panipat",
+                       "Sonipat","Rohtak","Bhiwani","Jhajjar","Gurugram",
+                       "Faridabad","Rewari","Mahendragarh","Mewat","Palwal")
+                   )
                  ),
-                 tabPanel("Data", HTML("</br>"),
-                          DTOutput(ns("districtGDPTable"))
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("districtGDP"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("districtGDPTable"))
+                     )
+                   )
                  )
                )
       ),
       tabPanel("Sectoral GDP Distribution",
-               tabsetPanel(
-                 tabPanel("Plot", 
-                          highchartOutput(ns("sectorGDP"))
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(inputId = ns("sectorYear"), 
+                               label = "Select Year", 
+                               c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
+                   )
                  ),
-                 tabPanel("Data", HTML("</br>"),
-                          DTOutput(ns("sectorGDPTable"))
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot", 
+                              highchartOutput(ns("sectorGDP"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("sectorGDPTable"))
+                     )
+                   )
                  )
                )
       ),
@@ -108,6 +130,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       #'arg' should be one of “default”, “bootstrap”, “bootstrap4”, “bootstrap5”, 
       # “bulma”, “dataTables”, “foundation”, “jqueryui”, “semanticui”
       datatable(stateGDP, rownames = FALSE,
+                extensions = 'Responsive',
                 style = "bootstrap5",
                 caption = "State GDP in Rs. Lakhs",
                 options = list(
@@ -149,6 +172,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # District GDP Tree Map Table
     output$gdpTreeMapTable <- renderDT({
       datatable(dta2(), rownames = FALSE,
+                extensions = 'Responsive',
                 style = "bootstrap5",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
@@ -223,6 +247,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # District GDP Table
     output$districtGDPTable <- renderDT({
       datatable(dta1(), rownames = FALSE,
+                extensions = 'Responsive',
                 style = "bootstrap5",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
@@ -262,6 +287,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # Sectoral GDP Table
     output$sectorGDPTable <- renderDT({
       datatable(sectoralGDP_react(), rownames = FALSE,
+                extensions = 'Responsive',
                 style = "bootstrap5",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
