@@ -32,10 +32,7 @@ gdpUI <- function(id) {
                    selectInput(
                      inputId = ns("district"),
                      label = "Select District",
-                     c("Panchkula","Ambala","Yamunanagar","Kurushetra","Kaithal",
-                       "Karnal","Sirsa","Jind","Fatehabad","Hisar","Panipat",
-                       "Sonipat","Rohtak","Bhiwani","Jhajjar","Gurugram",
-                       "Faridabad","Rewari","Mahendragarh","Mewat","Palwal")
+                     unique(districtGDP$District)
                    )
                  ),
                  mainPanel(
@@ -58,7 +55,7 @@ gdpUI <- function(id) {
                    selectInput(
                      inputId = ns("yearGDP"),
                      label = "Select Year",
-                     c("2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12")
+                     rev(unique(districtGDP$Year))
                    )
                  ),
                  mainPanel(
@@ -74,13 +71,13 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("GDP Distribution (Sector)",
+      tabPanel("GDP Distribution (Sectors)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
                    selectInput(inputId = ns("sectorYear"), 
-                               label = "Select Year", 
-                               c("2020-21","2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12","2010-11","2009-10","2008-09","2007-08","2006-07","2005-06","2004-05","2003-04","2002-03","2001-02","2000-01")
+                               label = "Select Year",
+                               rev(unique(sectoralGDP$Year))
                    )
                  ),
                  mainPanel(
@@ -96,7 +93,8 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("Sectoral GDP Trend",
+      
+      tabPanel("Sectors GDP Trend",
                tabsetPanel(
                  tabPanel("Plot",
                           highchartOutput(ns("sectorGDPtrend"))
