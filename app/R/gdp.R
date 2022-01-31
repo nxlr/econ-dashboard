@@ -169,16 +169,19 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     # State GDP Bar Plot with Trend
     
     output$gdpBars <- renderHighchart({
-      hc <- stateGDP %>% 
-        hchart(type = 'column', hcaes(x = Year, y = GSDP, color = GSDP)) %>%
+      hc <- highchart() %>% 
+        hc_add_series(data = stateGDP, type = 'column', 
+                      hcaes(x = Year, y = GSDP, color = GSDP)) %>%
         hc_title(text = paste(state, "GDP (in ₹ Lakhs)", sep = " "),
                  align = "center") %>% 
         hc_subtitle(text = "(at 2011-12 Constant Prices)", 
                     align = "center") %>%
-        hc_yAxis(text = paste("GDP")) %>%
+        hc_yAxis(title = list(text = paste("GDP"))) %>%
+        hc_xAxis(title = list(text = paste("Year")), categories = stateGDP$Year) %>%
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    headerFormat = paste("<b>Year: {point.key}</b>"),
                    pointFormat = paste("</br><b>GDP: {point.y} ₹ Lakhs</b>")) %>%
+        hc_legend(enabled = FALSE) %>%
         hc_credits(
           enabled = TRUE,
           text = "Source: DESA, Haryana",
@@ -223,7 +226,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
                    pointHeader = "",
                    pointFormatter = JS("function(){
                    var percent = parseFloat(this.value / this.series.tree.val * 100).toFixed(2);
-                   var str1 = '</br><b>' + 'GDP : ' + this.value + '</b></br>'
+                   var str1 = '</br><b>' + 'GDP : ' + this.value + ' ₹ Lakhs</b></br>'
                    var str2 = '<b>' + 'Percent : ' + percent + ' %' + '</b>';
                    return (str1 + str2)
                    }")
@@ -238,33 +241,6 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
         hc_add_theme(hc_theme_smpl())
       
     })
-    
-    # output$gdpTreeMap <- renderPlotly({
-    #   plot_ly(
-    #     type = 'treemap',
-    #     labels= dta2()$District,
-    #     parents = c(""), 
-    #     values = dta2()$GDP,
-    #     hovertemplate = paste("District :", dta2()$District,
-    #                           "<br> GDP : ₹ ", dta2()$GDP, " Lakhs",
-    #                           "<extra></extra>"),
-    #     texttemplate = paste(dta2()$District,
-    #                          "<br>", format(round(dta2()$Percent, 2), nsmall = 2),
-    #                          "%"),
-    #     marker=list(colorscale='Hot')
-    #     #marker=list(colors=c("lightgreen", "aqua", "yellow", "purple", "#FFF", "lightgray", "pink"))
-    #   ) %>%
-    #     config(displaylogo = FALSE) %>% 
-    #     layout(title = list(y=0.98, text=paste("Haryana GDP Distribution (in ", input$yearGDP, ")"),
-    #                         font=list(size=18, family="Lato")),
-    #            annotations = list(
-    #              list(x = 0.0 , y = -0.1, text = "Source: DESA, Haryana",
-    #                   font=list(color="grey", family="Courier New, monospace", size=12),
-    #                   showarrow = F, xref='paper', yref='paper')),
-    #            paper_bgcolor='#fff0d8',
-    #            plot_bgcolor='#fff0d8'
-    #     )    
-    # })
     
     # User Input for District 
     dta1 <- reactive({
@@ -291,7 +267,6 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       hc <- highchart() %>%
         hc_add_series(data = dta1(), type = 'column', 
                       hcaes(x = Year, y = GDP, color = GDP)) %>%
-        hc_add_series(data = dta1(),type = 'spline', hcaes(x = Year, y = GDP)) %>%
         hc_title(text = paste(input$district, "GDP (in ₹ Lakhs)",sep=" "),
                  align = "center") %>% 
         hc_subtitle(text = "(at 2011-12 Prices)", 
@@ -301,6 +276,13 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    headerFormat = paste("<b>Year: {point.key}</b>"),
                    pointFormat = paste("</br><b>GDP: {point.y} ₹ Lakhs</b>")) %>%
+        hc_legend(enabled = FALSE) %>%
+        hc_tooltip(borderWidth=3, shared=TRUE,
+                   pointFormatter = JS("function(){
+                   var str2 = '</br><b>GDP : ' + this.y + ' ₹ Lakhs</b>';
+                   return (str2)
+                   }")) %>%
+        
         hc_credits(
           enabled = TRUE,
           text = "Source: DESA, Haryana",
