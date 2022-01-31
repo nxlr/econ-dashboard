@@ -15,7 +15,7 @@ gdpUI <- function(id) {
       maximizable = TRUE,
       elevation = 4,
       sidebar = NULL,
-      tabPanel("State GDP",
+      tabPanel(paste(state, "GDP", sep = " "),
                tabsetPanel(
                  tabPanel("Plot",
                           highchartOutput(ns("gdpBars"))
@@ -25,7 +25,7 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("District GDP (Trend)",
+      tabPanel("District GDP",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
@@ -38,7 +38,7 @@ gdpUI <- function(id) {
                  mainPanel(
                    width = 10,
                    tabsetPanel(
-                     tabPanel("Plot",
+                     tabPanel("Trend",
                               highchartOutput(ns("districtGDP"))
                      ),
                      tabPanel("Data", HTML("</br>"),
@@ -71,7 +71,7 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("Sector GSVA (Trend)",
+      tabPanel("Sector GVA (Trend)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
@@ -94,7 +94,7 @@ gdpUI <- function(id) {
                  )
                )
       ),
-      tabPanel("GSVA (Pie)",
+      tabPanel("GVA (Pie)",
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
@@ -117,7 +117,7 @@ gdpUI <- function(id) {
                )
       ),
       
-      tabPanel("GSVA (Stacked)",
+      tabPanel("GVA (Stacked)",
                tabsetPanel(
                  tabPanel("Plot",
                           highchartOutput(ns("sectorGDPtrend"))
@@ -284,8 +284,9 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     
     # District GDP Bar Plot with Trend
     output$districtGDP <- renderHighchart({
-      hc <- dta1() %>% 
-        hchart(type = 'column', hcaes(x = Year, y = GDP, color = GDP)) %>%
+      hc <- highchart() %>%
+        hc_add_series(data = dta1(), type = 'column', 
+                      hcaes(x = Year, y = GDP, color = GDP)) %>%
         hc_title(text = paste(input$district, "GDP (in ₹ Lakhs)",sep=" "),
                  align = "center") %>% 
         hc_subtitle(text = "(at 2011-12 Prices)", 
@@ -299,6 +300,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
           text = "Source: DESA, Haryana",
           href = "https://esaharyana.gov.in/"
         ) %>%
+        hc_add_series(data = dta1(),type = 'spline', hcaes(x = Year, y = GDP)) %>%
         hc_add_theme(hc_theme_smpl())
     })
     
