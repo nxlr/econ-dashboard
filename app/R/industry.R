@@ -12,15 +12,30 @@ industryUI <- function(id) {
       collapsible = TRUE,
       maximizable = TRUE,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("industrySidebar"),
-        selectInput(
-          inputId = ns("indusYear"),
-          label = "Year",
-          c("2019-20","2018-19","2017-18", "2016-17", "2015-16", "2014-15", "2013-14", "2012-13", "2011-12", "2010-11"))
-      ),
-      tabPanel("Factories and Workers Scatter-Plot", highchartOutput(ns("industryBubble")),
-               HTML("<br/>"), DTOutput(ns("industryTable")))
+      sidebar = NULL,
+      tabPanel(paste(state, "(Factories and Workers)", sep = " "),
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(
+                     inputId = ns("indusYear"),
+                     label = "Year",
+                     unique(indusData$Year)
+                  )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                       highchartOutput(ns("industryBubble"))
+                     ),
+                     tabPanel("Data",
+                       HTML("<br/>"), DTOutput(ns("industryTable"))
+                     )
+                   )
+                 )
+               )
+      )
     )
   )
 }
@@ -28,10 +43,6 @@ industryUI <- function(id) {
 
 industryServer <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
-    observeEvent(input$indusYear, {
-      updateBoxSidebar("industrySidebar")
-    })
     
     # State - Industry and Number of Workers
     indusReact <- reactive({
