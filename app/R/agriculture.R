@@ -12,21 +12,27 @@ agricultureUI <- function(id) {
       collapsible = TRUE,
       maximizable = TRUE,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("agricultureSidebar"),
-        varSelectInput(
-          inputId = ns("irrigationVar"),
-          label = "Irrigation Data",
-          irrigation_data %>% select(-one_of("Year", "District"))
-        )
-      ),
-      tabPanel("Irrigation",
-               tabsetPanel(
-                 tabPanel("Plot",
-                          highchartOutput(ns("irrigationPlot"))
+      sidebar = NULL,
+      tabPanel(paste(state, "Irrigation", sep = " "),
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   varSelectInput(
+                     inputId = ns("irrigationVar"),
+                     label = "Irrigation Data",
+                     irrigation_data %>% select(-one_of("Year", "District"))
+                   )
                  ),
-                 tabPanel("Data", HTML("</br>"),
-                          DTOutput(ns("irrigationTable"))
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("irrigationPlot"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("irrigationTable"))
+                     )
+                   )
                  )
                )
       )
@@ -39,10 +45,6 @@ agricultureUI <- function(id) {
 
 agricultureServer <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
-    observeEvent(input$irrigationVar, {
-      updateBoxSidebar("agricultureSidebar")
-    })
     
     # Filter irrigation Data
     irrigationData <- reactive({
@@ -74,7 +76,11 @@ agricultureServer <- function(id) {
       
       hc <- df() %>%
       hchart('streamgraph', hcaes(x = Year, y = `Irrigated Area`, 
-                                  group = District)
+                                  group = District),
+             stacking = "percent",
+             borderWidth = 0,
+             groupPadding = 0,
+             pointPadding  = 0
              ) %>%
         hc_title(text = paste(input$irrigationVar),
                  align = "center") %>%
