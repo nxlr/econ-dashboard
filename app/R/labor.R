@@ -7,7 +7,7 @@ laborUI <- function(id) {
       width = 12,
       elevation = 4,
       sidebar = NULL,
-      tabPanel("Overall Distribution",
+      tabPanel(paste(state, "(Labor Stats)", sep = " "),
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
