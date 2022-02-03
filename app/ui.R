@@ -71,6 +71,7 @@ shinyUI(dashboardPage(
   ),
   body = dashboardBody(
     
+    # Auto adjust dimensions of select input box.
     tags$head(
       tags$style(HTML("
       .selectize-input {

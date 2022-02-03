@@ -12,16 +12,31 @@ healthUI <- function(id) {
       collapsible = TRUE,
       maximizable = TRUE,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("healthSidebar"),
-        varSelectInput(
-          inputId = ns("healthVar"),
-          label = "Health Data",
-          healthData %>% select(-one_of("Year", "District"))
-        )
-      ),
-      tabPanel("Public Health", highchartOutput(ns("healthPlot")),
-               HTML("</br>"), DTOutput(ns("healthTable")))
+      sidebar = NULL,
+      tabPanel("Public Health", 
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   varSelectInput(
+                     inputId = ns("healthVar"),
+                     label = "Health Data",
+                     healthData %>% select(-one_of("Year", "District"))
+                   )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("healthPlot"))
+                     ),
+                     tabPanel("Data", HTML("</br>"), 
+                              DTOutput(ns("healthTable"))
+                       
+                     )
+                   )
+                 )
+               )
+      )
     )
   )
 }
@@ -29,11 +44,7 @@ healthUI <- function(id) {
 
 healthServer <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
-    observeEvent(input$healthVar, {
-      updateBoxSidebar("healthSidebar")
-    })
-    
+  
     # Filter irrigation Data
     healData <- reactive({
       healthData %>% dplyr::select("Year", "District", input$healthVar)

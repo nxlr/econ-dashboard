@@ -12,14 +12,19 @@ educationUI <- function(id) {
       collapsible = TRUE,
       maximizable = TRUE,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("educationSidebar")
-      ),
-      tabPanel("Literacy", highchartOutput(ns("literacyPlot")),
-               HTML("</br>"), DTOutput(ns("literacyTable")))
-      
+      sidebar = NULL,
+      tabPanel("Literacy Rate",
+               
+        tabsetPanel(
+          tabPanel("Plot",
+                   highchartOutput(ns("literacyPlot"))
+          ),
+          tabPanel("Data",
+                   HTML("</br>"), DTOutput(ns("literacyTable"))
+          )
+        )
+      )
     )
-    
   )
 }
 
