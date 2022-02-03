@@ -12,16 +12,29 @@ financeUI <- function(id) {
       collapsible = TRUE,
       maximizable = TRUE,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("financeSidebar"),
-        varSelectInput(
-          inputId = ns("financeVar"),
-          label = "Finance Data",
-          financeData %>% select(-one_of("Year"))
-        )
-      ),
-      tabPanel("Public Finance", highchartOutput(ns("financePlot")),
-               HTML("</br>"), DTOutput(ns("financeTable")))
+      sidebar = NULL,
+      tabPanel("Public Finance",
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   varSelectInput(
+                     inputId = ns("financeVar"),
+                     label = "Finance Data",
+                     financeData %>% select(-one_of("Year"))
+                   )
+                 ),
+                 mainPanel(
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("financePlot"))
+                     ),
+                     tabPanel("Data",
+                              DTOutput(ns("financeTable"))
+                     )
+                   )
+                 )
+               )
+      )
     )
   )
 }
@@ -29,10 +42,6 @@ financeUI <- function(id) {
 
 financeServer <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
-    observeEvent(input$financeVar, {
-      updateBoxSidebar("financeSidebar")
-    })
     
     # Filter irrigation Data
     finData <- reactive({
