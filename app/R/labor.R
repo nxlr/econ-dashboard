@@ -6,20 +6,86 @@ laborUI <- function(id) {
       type = "tabs",
       width = 12,
       elevation = 4,
-      sidebar = boxSidebar(
-        id = ns("allLaborSidebar"),
-        selectInput(inputId = ns("yearLabor"), 
-                    label = " PLFS Year", 
-                    c("2019-20","2018-19","2017-18")),
-        selectInput(inputId = ns("ageLabor"), 
-                    label = " Age Group", 
-                    c("15-29","15 and above","All ages"))
+      sidebar = NULL,
+      tabPanel("Overall Distribution",
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(inputId = ns("yearLabor"), 
+                               label = " PLFS Year",
+                               unique(allLabor_data$Year)
+                   ),
+                   selectInput(inputId = ns("ageLabor"), 
+                               label = " Age Group",
+                               unique(allLabor_data$Age)
+                   )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              plotlyOutput(ns("allLaborPlot"))
+                              ),
+                     tabPanel("Data",
+                              DTOutput(ns("allLaborTable")) 
+                              )
+                   )
+                 )
+               )
+      ), 
+      tabPanel("Sectoral Distribution",
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(inputId = ns("yearSectoralLabor"), 
+                               label = " PLFS Year",
+                               unique(sectoralLabor_data$Year)
+                   ),
+                   selectInput(inputId = ns("ageSectoralLabor"), 
+                               label = " Age Group",
+                               unique(sectoralLabor_data$Age)
+                   )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              plotlyOutput(ns("sectoralLaborPlot"))
+                     ),
+                     tabPanel("Data",
+                              DTOutput(ns("sectoralLaborTable")) 
+                     )
+                   )
+                 )
+               )
       ),
-      tabPanel("Overall Distribution", plotlyOutput(ns("allLaborPlot")),
-               HTML("<br/>"), DTOutput(ns("allLaborTable"))), 
-      tabPanel("Education-wise Distribution", DTOutput(ns("edLaborTable"))), 
-      tabPanel("Sectoral Distribution", plotlyOutput(ns("sectoralLaborPlot")),
-               HTML("<br/>"), DTOutput(ns("sectoralLaborTable")))
+      
+      tabPanel("Education-wise Distribution",
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(inputId = ns("yearEdLabor"), 
+                               label = " PLFS Year",
+                               unique(edLabor_data$Year)
+                   ),
+                   selectInput(inputId = ns("ageEdLabor"), 
+                               label = " Age Group",
+                               unique(edLabor_data$Age)
+                   )
+                 ),
+                 mainPanel(
+                   width = 10,
+                   tabsetPanel(
+                     # tabPanel("Plot",
+                     #          plotlyOutput(ns("allLaborPlot"))
+                     # ),
+                     tabPanel("Data",
+                              DTOutput(ns("edLaborTable")) 
+                     )
+                   )
+                 )
+               )
+      )
     )
   )
 }
@@ -27,14 +93,6 @@ laborUI <- function(id) {
 
 laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
   moduleServer(id, function(input, output, session) {
-    
-    observeEvent(input$yearLabor, {
-      updateBoxSidebar("allLaborSidebar")
-    })
-    
-    observeEvent(input$ageLabor, {
-      updateBoxSidebar("allLaborSidebar")
-    })
     
     # State - Overall Labor
     allLaborReact <- reactive({
@@ -61,11 +119,11 @@ laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
     
     # State - Labor by Education
     edLaborReact <- reactive({
-      req(input$yearLabor)
-      req(input$ageLabor)
+      req(input$yearEdLabor)
+      req(input$ageEdLabor)
       
-      edLabor_data <- edLabor_data %>% filter(edLabor_data$Year == input$yearLabor) 
-      df5 <- edLabor_data %>% filter(edLabor_data$Age == input$ageLabor)                                
+      edLabor_data <- edLabor_data %>% filter(edLabor_data$Year == input$yearEdLabor) 
+      df5 <- edLabor_data %>% filter(edLabor_data$Age == input$ageEdLabor)                                
       
     })
     
@@ -84,11 +142,11 @@ laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
     
     # State - Labor by Sector
     sectoralLaborReact <- reactive({
-      req(input$yearLabor)
-      req(input$ageLabor)
+      req(input$yearSectoralLabor)
+      req(input$ageSectoralLabor)
       
-      sectoralLabor_data <- sectoralLabor_data %>% filter(sectoralLabor_data$Year == input$yearLabor) 
-      df6 <- sectoralLabor_data %>% filter(sectoralLabor_data$Age == input$ageLabor)                                
+      sectoralLabor_data <- sectoralLabor_data %>% filter(sectoralLabor_data$Year == input$yearSectoralLabor) 
+      df6 <- sectoralLabor_data %>% filter(sectoralLabor_data$Age == input$ageSectoralLabor)                                
       
     })
     
