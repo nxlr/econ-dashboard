@@ -29,7 +29,7 @@ industryUI <- function(id) {
                      tabPanel("Plot",
                        highchartOutput(ns("industryBubble"))
                      ),
-                     tabPanel("Data",
+                     tabPanel("Data", HTML("</br>"),
                        DTOutput(ns("industryTable"))
                      )
                    )

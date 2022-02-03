@@ -26,7 +26,7 @@ laborUI <- function(id) {
                      tabPanel("Plot",
                               plotlyOutput(ns("allLaborPlot"))
                               ),
-                     tabPanel("Data",
+                     tabPanel("Data", HTML("</br>"),
                               DTOutput(ns("allLaborTable")) 
                               )
                    )
@@ -52,7 +52,7 @@ laborUI <- function(id) {
                      tabPanel("Plot",
                               plotlyOutput(ns("sectoralLaborPlot"))
                      ),
-                     tabPanel("Data",
+                     tabPanel("Data", HTML("</br>"),
                               DTOutput(ns("sectoralLaborTable")) 
                      )
                    )
@@ -79,7 +79,7 @@ laborUI <- function(id) {
                      # tabPanel("Plot",
                      #          plotlyOutput(ns("allLaborPlot"))
                      # ),
-                     tabPanel("Data",
+                     tabPanel("Data", HTML("</br>"),
                               DTOutput(ns("edLaborTable")) 
                      )
                    )

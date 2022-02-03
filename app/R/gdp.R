@@ -31,7 +31,7 @@ gdpUI <- function(id) {
                    width = 2,
                    selectInput(
                      inputId = ns("district"),
-                     label = "Select District",
+                     label = "District",
                      unique(districtGDP$District)
                    )
                  ),
@@ -54,7 +54,7 @@ gdpUI <- function(id) {
                    width = 2,
                    selectInput(
                      inputId = ns("yearGDP"),
-                     label = "Select Year",
+                     label = "Year",
                      rev(unique(districtGDP$Year))
                    )
                  ),
@@ -72,12 +72,13 @@ gdpUI <- function(id) {
                )
       ),
       tabPanel("Sector GVA (Trend)",
+               
                sidebarLayout(
                  sidebarPanel(
                    width = 2,
                    varSelectInput(
                      inputId = ns("gsvaVar"),
-                     label = "Select Sector",
+                     label = "Sector",
                      sectoralAll %>% select(-one_of("Year"))
                    )
                  ),
@@ -99,7 +100,7 @@ gdpUI <- function(id) {
                  sidebarPanel(
                    width = 2,
                    selectInput(inputId = ns("sectorYear"), 
-                               label = "Select Year",
+                               label = "Year",
                                rev(unique(sectoralGDP$Year))
                    )
                  ),

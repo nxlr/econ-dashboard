@@ -28,7 +28,7 @@ financeUI <- function(id) {
                      tabPanel("Plot",
                               highchartOutput(ns("financePlot"))
                      ),
-                     tabPanel("Data",
+                     tabPanel("Data", HTML("</br>"),
                               DTOutput(ns("financeTable"))
                      )
                    )

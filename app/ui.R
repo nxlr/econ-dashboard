@@ -1,5 +1,4 @@
 shinyUI(dashboardPage(
-  
   title = HTML("GJUST Economy Dashboard"),
   fullscreen = TRUE,
   dark = NULL,
@@ -71,6 +70,14 @@ shinyUI(dashboardPage(
                      Hisar, Haryana."))
   ),
   body = dashboardBody(
+    
+    tags$head(
+      tags$style(HTML("
+      .selectize-input {
+        height: auto;
+      }"))
+    ),
+    
     # Use Waiter if Loading Output Plots take time
     useWaiter(), 
     autoWaiter(html = tagList(spin_circle(), h5("Loading..."))),
