@@ -136,18 +136,6 @@ gdpUI <- function(id) {
 gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
   moduleServer(id, function(input, output, session) {
     
-    observeEvent(input$yearGDP, {
-      updateBoxSidebar("gdpSidebar")
-    })
-    
-    observeEvent(input$district, {
-      updateBoxSidebar("gdpSidebar")
-    })
-    
-    observeEvent(input$sectorYear, {
-      updateBoxSidebar("gdpSidebar")
-    })
-    
     # GDP Table
     output$gdpTable <- renderDT({
       
