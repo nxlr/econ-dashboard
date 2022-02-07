@@ -309,7 +309,7 @@ laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
       
       subplot(primary, secondary, higher ,titleX = T, shareY = T) %>% 
         layout(barmode = 'stack', showlegend = T,
-               yaxis = list(title = ""))
+               yaxis = list(title = "", visible = FALSE))
     })
     
   })
