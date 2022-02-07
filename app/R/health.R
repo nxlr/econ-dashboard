@@ -21,6 +21,11 @@ healthUI <- function(id) {
                      inputId = ns("healthVar"),
                      label = "Health Data",
                      healthData %>% select(-one_of("Year", "District"))
+                   ),
+                   selectInput(
+                     inputId = ns("healthDistrict"),
+                     label = "District",
+                     c(c('All'), unique(healthData$District))
                    )
                  ),
                  mainPanel(
@@ -45,12 +50,17 @@ healthUI <- function(id) {
 healthServer <- function(id) {
   moduleServer(id, function(input, output, session) {
   
-    # Filter irrigation Data
+    # Filter Health Data
     healData <- reactive({
-      healthData %>% dplyr::select("Year", "District", input$healthVar)
+      if (input$healthDistrict != 'All'){
+        healthData %>% dplyr::select("Year", "District", input$healthVar) %>%
+          filter(healthData$District == input$healthDistrict)
+      } else {
+        healthData %>% dplyr::select("Year", "District", input$healthVar)
+      }
     })
     
-    # Irrigation Variable Table
+    # Health Variable Table
     output$healthTable <- renderDT({
       datatable(healData(), 
                 rownames = F,
@@ -66,7 +76,12 @@ healthServer <- function(id) {
     })
     
     dh <- reactive({
-      dh <- healData() %>% setNames(c("Year", "District", "Indicator"))
+        if (input$healthDistrict != 'All'){
+          dh <- healData() %>% setNames(c("Year", "District", "Indicator")) %>%
+          filter(healData()$District == input$healthDistrict)
+        } else {
+          dh <- healData() %>% setNames(c("Year", "District", "Indicator"))
+        }
     })
     
     # Irrigation Data Plot
