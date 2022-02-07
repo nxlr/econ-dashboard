@@ -31,6 +31,11 @@ shinyUI(dashboardPage(
         icon = icon("chart-line")
       ),
       menuItem(
+        "Labor Statistics",
+        tabName = "labor",
+        icon = icon("users-cog")
+      ),
+      menuItem(
         "Agriculture",
         tabName = "agriculture",
         icon = icon("seedling")
@@ -39,11 +44,6 @@ shinyUI(dashboardPage(
         "Industry",
         tabName = "industry",
         icon = icon("industry")
-      ),
-      menuItem(
-        "Labor Statistics",
-        tabName = "labor",
-        icon = icon("users-cog")
       ),
       menuItem(
         "Public Finance",
@@ -89,16 +89,16 @@ shinyUI(dashboardPage(
         gdpUI(state)
       ),
       tabItem(
+        tabName = "labor",
+        laborUI(state)
+      ),
+      tabItem(
         tabName = "agriculture",
         agricultureUI(state)
       ),
       tabItem(
         tabName = "industry",
         industryUI(state)
-      ),
-      tabItem(
-        tabName = "labor",
-        laborUI(state)
       ),
       tabItem(
         tabName = "finance",
