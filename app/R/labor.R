@@ -12,11 +12,11 @@ laborUI <- function(id) {
                  sidebarPanel(
                    width = 2,
                    selectInput(inputId = ns("yearLabor"), 
-                               label = " PLFS Year",
+                               label = "PLFS Year",
                                unique(allLabor_data$Year)
                    ),
                    selectInput(inputId = ns("ageLabor"), 
-                               label = " Age Group",
+                               label = "Age Group",
                                unique(allLabor_data$Age)
                    )
                  ),
@@ -38,11 +38,11 @@ laborUI <- function(id) {
                  sidebarPanel(
                    width = 2,
                    selectInput(inputId = ns("yearSectoralLabor"), 
-                               label = " PLFS Year",
+                               label = "PLFS Year",
                                unique(sectoralLabor_data$Year)
                    ),
                    selectInput(inputId = ns("ageSectoralLabor"), 
-                               label = " Age Group",
+                               label = "Age Group",
                                unique(sectoralLabor_data$Age)
                    )
                  ),
@@ -65,20 +65,23 @@ laborUI <- function(id) {
                  sidebarPanel(
                    width = 2,
                    selectInput(inputId = ns("yearEdLabor"), 
-                               label = " PLFS Year",
+                               label = "PLFS Year",
                                unique(edLabor_data$Year)
                    ),
                    selectInput(inputId = ns("ageEdLabor"), 
-                               label = " Age Group",
+                               label = "Age Group",
                                unique(edLabor_data$Age)
-                   )
+                   ),
+                   selectInput(inputId = ns("sectorEdLabor"),
+                               label = "Sector",
+                               unique(edLabor_data$Sector))
                  ),
                  mainPanel(
                    width = 10,
                    tabsetPanel(
-                     # tabPanel("Plot",
-                     #          plotlyOutput(ns("allLaborPlot"))
-                     # ),
+                     tabPanel("Plot",
+                              plotlyOutput(ns("edLaborPlot"))
+                     ),
                      tabPanel("Data", HTML("</br>"),
                               DTOutput(ns("edLaborTable")) 
                      )
@@ -121,9 +124,11 @@ laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
     edLaborReact <- reactive({
       req(input$yearEdLabor)
       req(input$ageEdLabor)
+      req(input$sectorEdLabor)
       
       edLabor_data <- edLabor_data %>% filter(edLabor_data$Year == input$yearEdLabor) 
-      df5 <- edLabor_data %>% filter(edLabor_data$Age == input$ageEdLabor)                                
+      df5 <- edLabor_data %>% filter(edLabor_data$Age == input$ageEdLabor)
+      df6 <- df5 %>% filter(df5$Sector == input$sectorEdLabor)
       
     })
     
@@ -260,7 +265,51 @@ laborServer <- function(id, allLabor_data, edLabor_data, sectoralLabor_data) {
     })
     
     output$edLaborPlot <- renderHighchart({
+      primary <- edLaborReact() %>% filter(edLaborReact()$Education == "Primary") %>%
+        group_by(Variable) %>% 
+        arrange(Variable) %>%
+        plot_ly(
+          x = ~Gender, 
+          y = ~Value,
+          color= ~Variable,
+          colors = 'Accent',
+          type = 'bar',
+          legendgroup =~Variable,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = T) %>% 
+        layout(xaxis = list(title = "Primary Education"))
       
+      secondary <- edLaborReact() %>% filter(edLaborReact()$Education == "Secondary") %>%
+        group_by(Variable) %>% 
+        arrange(Variable) %>%
+        plot_ly(
+          x = ~Gender, 
+          y = ~Value, 
+          color= ~Variable,
+          colors = 'Accent',
+          type = 'bar',
+          legendgroup =~Variable,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = F) %>% 
+        layout(xaxis = list(title = "Secondary Education"))
+      
+      higher <- edLaborReact() %>% filter(edLaborReact()$Education == "Higher") %>%
+        group_by(Variable) %>% 
+        arrange(Variable) %>%
+        plot_ly(
+          x = ~Gender, 
+          y = ~Value, 
+          color= ~Variable,
+          colors = 'Accent',
+          type = 'bar',
+          legendgroup =~Variable,
+          hovertemplate = "%{y:.2f}%",
+          showlegend = F) %>% 
+        layout(xaxis = list(title = "Higher Education"))
+      
+      subplot(primary, secondary, higher ,titleX = T, shareY = T) %>% 
+        layout(barmode = 'stack', showlegend = T,
+               yaxis = list(title = ""))
     })
     
   })
