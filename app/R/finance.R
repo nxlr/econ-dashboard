@@ -70,7 +70,8 @@ financeServer <- function(id) {
     # Irrigation Data Plot
     output$financePlot <- renderHighchart({
       hc <- df() %>% 
-        hchart(type = 'column', hcaes(x = Year, y = Value, color = Value)) %>%
+        hchart(type = 'column', name = 'Value', 
+               hcaes(x = Year, y = Value, color = Value)) %>%
         hc_title(text = paste(input$financeVar),
                  align = "center") %>%
         hc_credits(
@@ -79,6 +80,11 @@ financeServer <- function(id) {
           href = "https://esaharyana.gov.in/"
         ) %>%
         hc_add_theme(hc_theme_smpl())
+      
+      hc %>%
+        hc_add_series(data = df(), name = 'Value', type = 'spline', 
+                      hcaes(x = Year, y = Value, color = Value))
+      
     })
     
     
