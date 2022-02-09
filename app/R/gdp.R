@@ -180,7 +180,7 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       hc <- highchart() %>% 
         hc_add_series(data = dtaSeries(), type = 'column', 
                       hcaes(x = Year, y = Value, color = Value)) %>%
-        hc_title(text = paste(state, "GDP (in ₹ Crores)", sep = " "),
+        hc_title(text = input$gdpSeries,
                  align = "center") %>%
         hc_yAxis(title = list(text = paste("GDP (in ₹ Crores)"))) %>%
         hc_xAxis(title = list(text = paste("Year")), categories = stateGDP$Year) %>%
