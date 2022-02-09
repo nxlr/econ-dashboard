@@ -16,14 +16,26 @@ gdpUI <- function(id) {
       elevation = 4,
       sidebar = NULL,
       tabPanel(paste(state, "GDP", sep = " "),
-               tabsetPanel(
-                 tabPanel("Plot",
-                          highchartOutput(ns("gdpBars"))
+               sidebarLayout(
+                 sidebarPanel(
+                   width = 2,
+                   selectInput(
+                     inputId = ns("gdpSeries"),
+                     label = "GDP Series",
+                     c('GDP at 2011-12 Prices','GDP at Current Prices')
+                   )
                  ),
-                 tabPanel("Data", HTML("</br>"),
-                          DTOutput(ns("gdpTable"))
+                 mainPanel(
+                   tabsetPanel(
+                     tabPanel("Plot",
+                              highchartOutput(ns("gdpBars"))
+                     ),
+                     tabPanel("Data", HTML("</br>"),
+                              DTOutput(ns("gdpTable"))
+                     )
                  )
                )
+              )
       ),
       tabPanel("District GDP",
                sidebarLayout(
@@ -137,15 +149,22 @@ gdpUI <- function(id) {
 gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
   moduleServer(id, function(input, output, session) {
     
+    # User Input for GDP Series
+    dtaSeries <- reactive({
+      req(input$gdpSeries)
+      df2 <- gdp_melt %>% filter(gdp_melt$Variable==input$gdpSeries)
+    })
+    
+    
     # GDP Table
     output$gdpTable <- renderDT({
       
       #'arg' should be one of “default”, “bootstrap”, “bootstrap4”, “bootstrap5”, 
       # “bulma”, “dataTables”, “foundation”, “jqueryui”, “semanticui”
-      datatable(stateGDP, rownames = FALSE,
+      datatable(dtaSeries(), rownames = FALSE,
                 extensions = 'Responsive',
                 style = "bootstrap5",
-                caption = "State GDP in Rs. Lakhs",
+                caption = "State GDP in Rs. Crores",
                 options = list(
                   columnDefs = list(list(className = 'dt-center', targets = c(1))),
                   autoWidht = TRUE,
@@ -159,21 +178,19 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     
     output$gdpBars <- renderHighchart({
       hc <- highchart() %>% 
-        hc_add_series(data = stateGDP, type = 'column', 
-                      hcaes(x = Year, y = GSDP, color = GSDP)) %>%
-        hc_title(text = paste(state, "GDP (in ₹ Lakhs)", sep = " "),
-                 align = "center") %>% 
-        hc_subtitle(text = "(at 2011-12 Constant Prices)", 
-                    align = "center") %>%
-        hc_yAxis(title = list(text = paste("GDP"))) %>%
+        hc_add_series(data = dtaSeries(), type = 'column', 
+                      hcaes(x = Year, y = Value, color = Value)) %>%
+        hc_title(text = paste(state, "GDP (in ₹ Crores)", sep = " "),
+                 align = "center") %>%
+        hc_yAxis(title = list(text = paste("GDP (in ₹ Crores)"))) %>%
         hc_xAxis(title = list(text = paste("Year")), categories = stateGDP$Year) %>%
         hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
                    headerFormat = paste("<b>Year: {point.key}</b>"),
-                   pointFormat = paste("</br><b>GDP: {point.y} ₹ Lakhs</b>")) %>%
+                   pointFormat = paste("</br><b>GDP: {point.y} ₹ Crores</b>")) %>%
         hc_legend(enabled = FALSE) %>%
         hc_credits(
           enabled = TRUE,
-          text = "Source: DESA, Haryana",
+          text = "Source: MOSPI and DESA, Haryana",
           href = "https://esaharyana.gov.in/"
         ) %>%
         hc_add_theme(hc_theme_smpl())

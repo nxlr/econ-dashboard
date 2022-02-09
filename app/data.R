@@ -3,7 +3,10 @@
 
 #shapeFile <- read_sf(dsn = "./www/Layers_DISTRICTS-polygon.shx")
 districtGDP <- read_excel("./datasets/gdp/districts_gdp.xlsx")
-stateGDP <- read_excel("./datasets/gdp/state_gdp_2011_12_prices.xlsx")
+stateGDP <- read_excel("./datasets/gdp/state_gdp.xlsx")
+gdp_melt <- melt(stateGDP, id=c("Year"))
+colnames(gdp_melt)[2] <- c("Variable")
+colnames(gdp_melt)[3] <- c("Value")
 indusData <- read_excel("./datasets/industry/industry_haryana.xlsx")
 sectoralGDP <- read_excel("./datasets/gdp/sectoral_gdp_transformed.xlsx")
 sectoralAll <- read_excel("./datasets/gdp/sectoral_gdp_constant.xlsx")
