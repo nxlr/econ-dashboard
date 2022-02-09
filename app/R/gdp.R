@@ -178,15 +178,12 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
     
     output$gdpBars <- renderHighchart({
       hc <- highchart() %>% 
-        hc_add_series(data = dtaSeries(), type = 'column', 
+        hc_add_series(data = dtaSeries(), name = 'GDP (in ₹ Crores)', type = 'column', 
                       hcaes(x = Year, y = Value, color = Value)) %>%
         hc_title(text = input$gdpSeries,
                  align = "center") %>%
         hc_yAxis(title = list(text = paste("GDP (in ₹ Crores)"))) %>%
         hc_xAxis(title = list(text = paste("Year")), categories = stateGDP$Year) %>%
-        hc_tooltip(crosshairs=TRUE, borderWidth=3, sort=TRUE, shared=TRUE, table=TRUE,
-                   headerFormat = paste("<b>Year: {point.key}</b>"),
-                   pointFormat = paste("</br><b>GDP: {point.y} ₹ Crores</b>")) %>%
         hc_legend(enabled = FALSE) %>%
         hc_credits(
           enabled = TRUE,
@@ -194,6 +191,10 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
           href = "https://esaharyana.gov.in/"
         ) %>%
         hc_add_theme(hc_theme_smpl())
+      
+      hc %>%
+        hc_add_series(data = dtaSeries(), name = 'GDP (in ₹ Crores)', type = 'spline', 
+                      hcaes(x = Year, y = Value, color = Value))
     })
     
     # User Input for GDP Tree 
