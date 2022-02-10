@@ -5,6 +5,7 @@ industryUI <- function(id) {
       id = ns("industry"),
       title = "",
       width = 12,
+      status = "olive",
       type = "tabs",
       closable = FALSE,
       solidHeader = TRUE,

@@ -26,6 +26,7 @@ gdpUI <- function(id) {
                    )
                  ),
                  mainPanel(
+                   width = 10,
                    tabsetPanel(
                      tabPanel("Plot",
                               highchartOutput(ns("gdpBars"))
@@ -194,7 +195,11 @@ gdpServer <- function(id, stateGDP, districtGDP, sectoralGDP) {
       
       hc %>%
         hc_add_series(data = dtaSeries(), name = 'GDP (in ₹ Crores)', type = 'spline', 
-                      hcaes(x = Year, y = Value, color = Value))
+                      hcaes(x = Year, y = Value, color = Value)) %>%
+        hc_exporting(
+          enabled = TRUE, # always enabled
+          filename = input$gdpSeries
+        )
     })
     
     # User Input for GDP Tree 

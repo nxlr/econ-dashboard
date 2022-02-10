@@ -6,6 +6,7 @@ financeUI <- function(id) {
       title = "",
       type = "tabs",
       width = 12,
+      status = "olive",
       closable = FALSE,
       solidHeader = TRUE,
       headerBorder = TRUE,
@@ -24,6 +25,7 @@ financeUI <- function(id) {
                    )
                  ),
                  mainPanel(
+                   width = 10,
                    tabsetPanel(
                      tabPanel("Plot",
                               highchartOutput(ns("financePlot"))
