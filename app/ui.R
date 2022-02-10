@@ -73,6 +73,9 @@ shinyUI(dashboardPage(
     
     # Auto adjust dimensions of select input box.
     tags$head(
+      
+      tags$script(src='https://platform-api.sharethis.com/js/sharethis.js#property=6203992d803dd7001adc7256&product=inline-share-buttons', async='async'),
+      
       tags$style(HTML("
       .selectize-input {
         height: auto;

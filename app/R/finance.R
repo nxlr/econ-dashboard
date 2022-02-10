@@ -69,10 +69,18 @@ financeServer <- function(id) {
     
     # Irrigation Data Plot
     output$financePlot <- renderHighchart({
+      
+      if (input$financeVar == "Total Tax to GDP Ratio" || 
+          input$financeVar == "State's Own -Tax Revenue to GDP Ratio") {
+        rp = ""
+      } else {
+        rp = "(₹ Crores)"
+      }
+      
       hc <- df() %>% 
         hchart(type = 'column', name = 'Value', 
                hcaes(x = Year, y = Value, color = Value)) %>%
-        hc_title(text = paste(input$financeVar),
+        hc_title(text = paste(input$financeVar, rp, sep = " "),
                  align = "center") %>%
         hc_credits(
           enabled = TRUE,
