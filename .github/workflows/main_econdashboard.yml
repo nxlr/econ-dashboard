@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://econdashboard.azurecr.io/
-        username: ${{ secrets.AzureAppService_ContainerUsername_0e15630bb79f466594a96c2565834803 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_16694abdee7d48fe8362ef013f51950b }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_b6861db8da77406a9e821de7d473c712 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_9b99e19a7fd64443b7a77ded0c2211fc }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: econdashboard.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_0e15630bb79f466594a96c2565834803 }}/myapp:${{ github.sha }}
+        tags: econdashboard.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b6861db8da77406a9e821de7d473c712 }}/econdashboard/myapp:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'econdashboard'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_24d73a63b00b409cb7613f14831e6ab0 }}
-        images: 'econdashboard.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_0e15630bb79f466594a96c2565834803 }}/myapp:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_a7e41917a1b14d6a90f1107df2493386 }}
+        images: 'econdashboard.azurecr.io/${{ secrets.AzureAppService_ContainerUsername_b6861db8da77406a9e821de7d473c712 }}/econdashboard/myapp:${{ github.sha }}'
